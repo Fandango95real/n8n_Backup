@@ -1,0 +1,577 @@
+{
+  "createdAt": "2025-05-23T10:05:28.892Z",
+  "updatedAt": "2025-05-23T16:26:13.000Z",
+  "id": "qqPofSEKswPVvYfv",
+  "name": "Emailing sequence",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -180
+      ],
+      "id": "7b12923c-1ac8-4461-8abd-7a65b5c71581",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "1fc0e4a6-9b58-80b7-b6d9-d03c8e3a321f",
+          "mode": "list",
+          "cachedResultName": "Prospects DAGDA",
+          "cachedResultUrl": "https://www.notion.so/1fc0e4a69b5880b7b6d9d03c8e3a321f"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        -180
+      ],
+      "id": "e113fe7f-a369-46f0-ba78-d353ce819691",
+      "name": "Get Prospects",
+      "credentials": {
+        "notionApi": {
+          "id": "f291e1a9rwjBTHf6",
+          "name": "Notion Fandango"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "id",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -180
+      ],
+      "id": "fb7d69eb-b915-4404-8663-35fb3b6dedff",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Split Out').item.json.property_sc_nario }}",
+                    "rightValue": "Comptable",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5e6ea3c6-19ec-41b6-ba24-dd72a6280542"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Comptable"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a27a18fd-a288-48d1-8187-96510a88cafd",
+                    "leftValue": "={{ $('Split Out').item.json.property_sc_nario }}",
+                    "rightValue": "Farfelu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Farfelu"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1100,
+        -180
+      ],
+      "id": "a077a1f3-b830-4ebf-a78e-3e8ff78cce3e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fromEmail": "gilles.hanotel@dagdaconsulting.fr",
+        "toEmail": "={{ $('Split Out').item.json.property_e_mail }}",
+        "subject": "Un partenariat local gagnant-gagnant pour vos clients",
+        "emailFormat": "both",
+        "text": "=Bonjour {{ $('Split Out').item.json.property_civilit }} {{ $('Split Out').item.json.property_pr_nom }} {{ $('Split Out').item.json.property_nom }},\n\nJe me permets de vous contacter car je dirige DAGDA Consulting, une agence locale spécialisée dans la création de sites web et la gestion de campagnes publicitaires pour les TPE/PME de notre région.\n\nNous travaillons régulièrement avec des artisans, commerçants et professions libérales qui ont besoin d'une vraie présence en ligne pour développer leur activité. \n\nJe vous propose un partenariat simple : pour chaque client que vous nous recommandez, nous vous reversons 10 % du chiffre d'affaires généré la première année. De quoi offrir un service utile à vos clients tout en valorisant votre rôle de conseil.\n\nJe serais ravi d’échanger avec vous pour vous présenter le fonctionnement en détail, en toute simplicité.\n\nSeriez-vous disponible cette semaine pour un échange de 15 minutes par téléphone ou visio ?\n\nBien à vous,  \nGilles Hanotel  \nDAGDA Consulting  \n📞 01 86 04 01 30\n🌐 https://www.dagdaconsulting.fr\n ",
+        "html": "=Bonjour {{ $('Split Out').item.json.property_civilit }} {{ $('Split Out').item.json.property_pr_nom }} {{ $('Split Out').item.json.property_nom }},\n\nJe me permets de vous contacter car je dirige DAGDA Consulting, une agence locale spécialisée dans la création de sites web et la gestion de campagnes publicitaires pour les TPE/PME de notre région.\n\nNous travaillons régulièrement avec des artisans, commerçants et professions libérales qui ont besoin d'une vraie présence en ligne pour développer leur activité. \n\nJe vous propose un partenariat simple : pour chaque client que vous nous recommandez, nous vous reversons 10 % du chiffre d'affaires généré la première année. De quoi offrir un service utile à vos clients tout en valorisant votre rôle de conseil.\n\nJe serais ravi d’échanger avec vous pour vous présenter le fonctionnement en détail, en toute simplicité.\n\nSeriez-vous disponible cette semaine pour un échange de 15 minutes par téléphone ou visio ?\n\nBien à vous,  \nGilles Hanotel  \nDAGDA Consulting  \n📞 01 86 04 01 30\n🌐 https://www.dagdaconsulting.fr",
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "gilles.hanotel@dagdaconsulting.fr"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2200,
+        -280
+      ],
+      "id": "30631a65-053a-47aa-819a-beffa5d6dd0e",
+      "name": "Send Email",
+      "webhookId": "6516cea2-d227-430b-868e-565a370e7f5f",
+      "credentials": {
+        "smtp": {
+          "id": "OCcMFTbzJ3Q4jkW3",
+          "name": "SMTP gilles.hanotel@dagdaconsulting.fr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "gilles.hanotel@dagdaconsulting.fr",
+        "toEmail": "gilles.hanotel@gmail.com",
+        "subject": "Encore un prospect bidon...",
+        "html": "={{ $('Split Out').item.json.property_pr_nom }}\n{{ $('Split Out').item.json.property_nom }}\n\n{{ $('Split Out').item.json.property_societe }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        -80
+      ],
+      "id": "847d5cbe-ea9c-4dca-85e3-fbd580805a4d",
+      "name": "Send Email1",
+      "webhookId": "0accc8a0-46f5-46cd-a9c5-3e2bd2394f5b",
+      "credentials": {
+        "smtp": {
+          "id": "OCcMFTbzJ3Q4jkW3",
+          "name": "SMTP gilles.hanotel@dagdaconsulting.fr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d7d53240-1fed-42f3-bd1c-ed7dcacfe631",
+              "leftValue": "={{ $json.millis }}",
+              "rightValue": "={{ $now.toMillis() }}",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            },
+            {
+              "id": "3461da4f-da10-4ee7-b0e5-4b54cc6bc03d",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -180
+      ],
+      "id": "214910fe-a4e2-40aa-adb6-5491518a2e0e",
+      "name": "Check_date"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Switch').item.json.url }}",
+          "mode": "url"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Séquence|number",
+              "numberValue": 999
+            },
+            {
+              "key": "Next Date|date",
+              "date": "2040-12-31T00:00:00"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        -80
+      ],
+      "id": "5cce395f-57b3-4688-bc76-38dae12916e5",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "f291e1a9rwjBTHf6",
+          "name": "Notion Fandango"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Split Out').item.json.url }}",
+          "mode": "url"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Séquence|number",
+              "numberValue": "={{ $('Split Out').item.json.property_s_quence +1 }}"
+            },
+            {
+              "key": "Next Date|date",
+              "date": "={{ $json.notionDate }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2640,
+        -280
+      ],
+      "id": "3bd4b317-541f-4cdd-85e3-48e8a8899a90",
+      "name": "Notion1",
+      "credentials": {
+        "notionApi": {
+          "id": "f291e1a9rwjBTHf6",
+          "name": "Notion Fandango"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const dateStr = $json.property_next_date.start;\nlet millis = 0;\nif (dateStr) {\n  millis = DateTime.fromISO(dateStr).toMillis();\n}\nreturn { json: { millis } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        -180
+      ],
+      "id": "d4609d3c-fe6b-4ca0-b01d-cbf8550b1014",
+      "name": "Convert Notion date"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let date = new Date(); \nlet daysToAdd = 3;\nlet added = 0;\n\nwhile (added < daysToAdd) {\n  date.setDate(date.getDate() + 1);\n  // 0 = dimanche, 6 = samedi\n  if (date.getDay() !== 0 && date.getDay() !== 6) {\n    added++;\n  }\n}\n\n// Format ISO pour Notion (exemple : 2025-05-29T00:00:00.000Z)\nconst notionDate = date.toISOString();\n\nreturn { notionDate };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2420,
+        -280
+      ],
+      "id": "64903bb0-6ad3-4b76-887c-df075d5f669c",
+      "name": "Add 3 days from now"
+    },
+    {
+      "parameters": {
+        "jsCode": "// On récupère le contenu du fichier téléchargé depuis Nextcloud (binaire base64)\nlet template = Buffer.from($binary.data, 'base64').toString('utf-8');\n\n// Vérification\nif (!template) {\n  throw new Error('Le contenu du template est vide ou mal référencé.');\n}\n\n// Variables à remplacer\nconst variables = {\n  Prenom: $('Split Out').first().json.property_pr_nom || '',\n  Nom: $('Split Out').first().json.property_nom || ''\n};\n\n// Remplacement des variables dans le template\nfor (const [key, value] of Object.entries(variables)) {\n  const regex = new RegExp(`{{${key}}}`, 'g');\n  template = template.replace(regex, value);\n}\n\nreturn { html: template };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        -280
+      ],
+      "id": "fe9bdca4-5bd3-4169-96f4-e8ab3b65c279",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "=  https://data.c-g-h.net/remote.php/dav/files/fandango/WebSites/Dagda%20Consulting/Prospection/Templates/{{ $('Split Out').item.json.property_sc_nario }}_{{ $('Split Out').item.json.property_s_quence }}.txt",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        -280
+      ],
+      "id": "ea274a57-502b-4545-8493-1babb15ff77d",
+      "name": "Get Template File",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "Enq6REyivJk5gMlq",
+          "name": "WebDav data.c-g-h.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const binary = $binary.data;\nconst buffer = Buffer.from(binary.data, 'base64');\nconst contenuTexte = buffer.toString('utf-8');\n\nreturn [{\n  json: {\n    templateTexte: contenuTexte\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        -280
+      ],
+      "id": "d958d926-7422-4059-b214-f7176f71eb6e",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "download"
+      },
+      "type": "n8n-nodes-base.nextCloud",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        -600
+      ],
+      "id": "8fb79433-1a40-4925-b5b3-7d5370443006",
+      "name": "Nextcloud",
+      "credentials": {
+        "nextCloudApi": {
+          "id": "IVa79bi5ZUmWlMFe",
+          "name": "NextCloud data.c-g-h.net"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Prospects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prospects": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Convert Notion date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Get Template File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Add 3 days from now",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check_date": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email1": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Notion date": {
+      "main": [
+        [
+          {
+            "node": "Check_date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add 3 days from now": {
+      "main": [
+        [
+          {
+            "node": "Notion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Template File": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nextcloud": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "508d0964-8db1-4ebb-beef-768c43a213ab",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-23T10:32:19.651Z",
+      "updatedAt": "2025-05-23T10:32:19.651Z",
+      "id": "3y7Gowr75o89CFLl",
+      "name": "notion"
+    },
+    {
+      "createdAt": "2025-05-23T10:32:25.379Z",
+      "updatedAt": "2025-05-23T10:32:25.379Z",
+      "id": "O6N6l951FPKf1qAr",
+      "name": "smtp"
+    }
+  ]
+}
