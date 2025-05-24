@@ -1,0 +1,203 @@
+{
+  "createdAt": "2025-05-21T21:46:02.094Z",
+  "updatedAt": "2025-05-22T17:22:00.000Z",
+  "id": "vBy2VrUYf4mzvlDZ",
+  "name": "Poemana - Vectorisation du corpus interne",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -40
+      ],
+      "id": "a82a8f04-4046-45c0-92e3-d3a3c72c9784",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "operation": "list",
+        "path": "/Poemana/Corpus"
+      },
+      "type": "n8n-nodes-base.nextCloud",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -40
+      ],
+      "id": "9d8e7527-c6e5-44a1-ba75-bcf45a946d1c",
+      "name": "List Corpus Files",
+      "credentials": {
+        "nextCloudApi": {
+          "id": "IVa79bi5ZUmWlMFe",
+          "name": "NextCloud data.c-g-h.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        440,
+        -40
+      ],
+      "id": "3ed90476-890e-4470-8df5-a4d12d7e7e6f",
+      "name": "Loop Over files"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        0,
+        245
+      ],
+      "id": "d55de47c-d767-4c58-bf7a-5a543fae0e20",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "W0hcIMhKZwyos4HP",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c978ab7f-8fb3-43f4-98d9-4554fab28e98",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "file",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        -40
+      ],
+      "id": "56081989-78ec-4ca7-8db6-cabee45a3566",
+      "name": "If file"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "path": "={{ $json.path }}"
+      },
+      "type": "n8n-nodes-base.nextCloud",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -15
+      ],
+      "id": "81f8fc9e-1159-41b8-b301-0923a6fb8008",
+      "name": "Download file",
+      "credentials": {
+        "nextCloudApi": {
+          "id": "IVa79bi5ZUmWlMFe",
+          "name": "NextCloud data.c-g-h.net"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "List Corpus Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Corpus Files": {
+      "main": [
+        [
+          {
+            "node": "Loop Over files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over files": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If file": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "73f100c6-5ab1-4561-bd0a-0abcdf21b124",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-21T21:46:48.064Z",
+      "updatedAt": "2025-05-21T22:47:24.039Z",
+      "id": "YIhJ2Y2JxVY694dc",
+      "name": "vectorisation"
+    }
+  ]
+}
