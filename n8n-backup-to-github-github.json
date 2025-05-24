@@ -1,16 +1,18 @@
 {
   "createdAt": "2025-05-22T21:40:21.323Z",
-  "updatedAt": "2025-05-24T11:28:30.000Z",
+  "updatedAt": "2025-05-24T11:42:08.000Z",
   "id": "VMAh01ISIXoMjHgM",
   "name": "n8n backup to github",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
       "parameters": {
         "rule": {
           "interval": [
-            {}
+            {
+              "triggerAtHour": 4
+            }
           ]
         }
       },
@@ -35,7 +37,13 @@
         520,
         160
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "1CFKxHUXGJ7avEvH",
+          "name": "n8n account"
+        }
+      }
     },
     {
       "parameters": {
@@ -94,18 +102,19 @@
     },
     {
       "parameters": {
-        "authentication": "oAuth2",
         "resource": "file",
         "operation": "edit",
         "owner": {
           "__rl": true,
-          "mode": "name",
-          "value": ""
+          "value": "Fandango95real",
+          "mode": "name"
         },
         "repository": {
           "__rl": true,
+          "value": "n8n_Backup",
           "mode": "list",
-          "value": ""
+          "cachedResultName": "n8n_Backup",
+          "cachedResultUrl": "https://github.com/Fandango95real/n8n_Backup"
         },
         "filePath": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows').item.json.tags[0].name }}.json",
         "fileContent": "={{ $('To base64').item.json.data }}",
@@ -119,21 +128,28 @@
         60
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "MvrrMOg72U43QcKb",
+          "name": "GitHub fandango95"
+        }
+      }
     },
     {
       "parameters": {
-        "authentication": "oAuth2",
         "resource": "file",
         "owner": {
           "__rl": true,
-          "mode": "name",
-          "value": ""
+          "value": "Fandango95real",
+          "mode": "name"
         },
         "repository": {
           "__rl": true,
+          "value": "n8n_Backup",
           "mode": "list",
-          "value": ""
+          "cachedResultName": "n8n_Backup",
+          "cachedResultUrl": "https://github.com/Fandango95real/n8n_Backup"
         },
         "filePath": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows').item.json.tags[0].name }}.json",
         "fileContent": "={{ $('To base64').item.json.data }}",
@@ -147,7 +163,13 @@
         240
       ],
       "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "MvrrMOg72U43QcKb",
+          "name": "GitHub fandango95"
+        }
+      }
     },
     {
       "parameters": {
@@ -377,15 +399,21 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "callerPolicy": "workflowsFromSameOwner"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "9c909aca-a151-4eba-9efe-aa416e37c4b6",
-  "triggerCount": 0,
+  "versionId": "b03e4330-c213-471e-992b-8b92917be3be",
+  "triggerCount": 1,
   "tags": [
     {
       "createdAt": "2025-05-24T11:19:17.694Z",
