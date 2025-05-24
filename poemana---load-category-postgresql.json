@@ -1,0 +1,491 @@
+{
+  "createdAt": "2025-05-20T15:47:32.572Z",
+  "updatedAt": "2025-05-21T22:50:28.000Z",
+  "id": "reKuBJuVsI4eYNDG",
+  "name": "Poemana - Load category",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "54df8413-c61a-41f3-86d8-e11dc68541af",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.poemana.com/api/categories?output_format=JSON&display=[id,name]&language=1&limit=1000",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "0edf3987-71e3-4e6c-987a-a08122084937",
+      "name": "Fetch All Categories",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "categories",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "65594e50-a880-4654-8e80-a4bafaa1b694",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "content": "## Import des catégories",
+        "height": 80,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -340,
+        20
+      ],
+      "typeVersion": 1,
+      "id": "8dcfaf75-44fe-47a8-9a58-3fed75012b6d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "product_features",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        220
+      ],
+      "id": "e5353442-22e6-4c6b-ad63-c4f8dcb4fa43",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "content": "## Import des caractéristiques",
+        "height": 80,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -340,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "a587efe4-5ac7-411c-98cd-fab71961aacb",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.poemana.com/api/product_features?output_format=JSON&display=[id,name]&language=1&limit=1000",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        220
+      ],
+      "id": "ade56901-9596-463c-a63b-bbee59cf7825",
+      "name": "Fetch All Features",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "product_feature_values",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        440
+      ],
+      "id": "567df396-1309-4f47-805e-3c50855b3f9a",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "content": "## Import des valeurs des caractéristiques",
+        "height": 80,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -340,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "4e5e4188-c9f5-4d47-8c65-f059eeb23962",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.poemana.com/api/product_feature_values?output_format=JSON&display=[id,id_feature,value]&language=1&limit=1000",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        440
+      ],
+      "id": "6bca76c3-63f6-42b6-bbb9-dab68ccfa069",
+      "name": "Fetch Features Values",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "prestashop_categories",
+          "mode": "list",
+          "cachedResultName": "prestashop_categories"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_category": "={{ $json.id }}",
+            "name": "={{ $json.name }}"
+          },
+          "matchingColumns": [
+            "id_category"
+          ],
+          "schema": [
+            {
+              "id": "id_category",
+              "displayName": "id_category",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        660,
+        0
+      ],
+      "id": "0c7b8624-12ec-4220-8721-b944511ffce3",
+      "name": "Save Categories",
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "prestashop_features",
+          "mode": "list",
+          "cachedResultName": "prestashop_features"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_feature": "={{ $json.id }}",
+            "name": "={{ $json.name }}"
+          },
+          "matchingColumns": [
+            "id_feature"
+          ],
+          "schema": [
+            {
+              "id": "id_feature",
+              "displayName": "id_feature",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        660,
+        220
+      ],
+      "id": "80353fa7-b1da-4290-a330-7f1f8eecf750",
+      "name": "Save Features",
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "prestashop_feature_values",
+          "mode": "list",
+          "cachedResultName": "prestashop_feature_values"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_feature_value": "={{ $json.id }}",
+            "value": "={{ $json.value }}"
+          },
+          "matchingColumns": [
+            "id_feature_value"
+          ],
+          "schema": [
+            {
+              "id": "id_feature_value",
+              "displayName": "id_feature_value",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "value",
+              "displayName": "value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        660,
+        440
+      ],
+      "id": "9f0bfe2d-33a6-42aa-953f-7a7183b2f20b",
+      "name": "Save Features Values",
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Fetch All Categories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch All Categories": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Save Categories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Save Features",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch All Features": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Save Features Values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Features Values": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Categories": {
+      "main": [
+        [
+          {
+            "node": "Fetch All Features",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Features": {
+      "main": [
+        [
+          {
+            "node": "Fetch Features Values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b8462c17-a2be-40f4-85e9-745e3375bcbd",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-21T22:47:46.565Z",
+      "updatedAt": "2025-05-21T22:47:46.565Z",
+      "id": "awZ2gIri7ry57Uqs",
+      "name": "postgresql"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
