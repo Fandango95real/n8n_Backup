@@ -1,0 +1,501 @@
+{
+  "createdAt": "2025-05-21T14:45:14.964Z",
+  "updatedAt": "2025-05-21T22:49:46.000Z",
+  "id": "RKPFM4N9mUI0NCWu",
+  "name": "Poemana - Load Products",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "id": "fa14fad8-d496-49b5-8b0c-bcf2bf34691a",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.poemana.com/api/products?output_format=JSON&display=[id]&filter[active]=[1]&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        200
+      ],
+      "id": "22fd3441-c258-45a4-b478-77fa0f5bdab8",
+      "name": "Get Product ID",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "products",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        200
+      ],
+      "id": "16bc9025-acd7-40ee-aa96-62c52eabccb4",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.poemana.com/api/products/{{ $json.id }}?output_format=JSON&display=[id,active,name,description_short,description,link_rewrite,meta_title,meta_description,price,reference,categories[id],product_features[id,id_feature_value]]&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        200
+      ],
+      "id": "354c1ecc-ee54-465e-89c1-d3b10d546c6d",
+      "name": "Get Product Details",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "prestashop_products",
+          "mode": "list",
+          "cachedResultName": "prestashop_products"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_product": "={{ $json.products[0].id }}",
+            "name": "={{ $json.products[0].name }}",
+            "description": "={{ $json.products[0].description }}",
+            "price": "={{ $json.products[0].price }}",
+            "active": "={{ $json.products[0].active }}",
+            "description_short": "={{ $json.products[0].description_short }}",
+            "link_rewrite": "={{ $json.products[0].link_rewrite }}",
+            "meta_title": "={{ $json.products[0].meta_title }}",
+            "meta_description": "={{ $json.products[0].meta_description }}",
+            "reference": "={{ $json.products[0].reference }}"
+          },
+          "matchingColumns": [
+            "id_product"
+          ],
+          "schema": [
+            {
+              "id": "id_product",
+              "displayName": "id_product",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "active",
+              "displayName": "active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "description_short",
+              "displayName": "description_short",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "link_rewrite",
+              "displayName": "link_rewrite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "meta_title",
+              "displayName": "meta_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "meta_description",
+              "displayName": "meta_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "reference",
+              "displayName": "reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_synced",
+              "displayName": "last_synced",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "a7b3eb61-a075-45c7-9c38-98a9552cf737",
+      "name": "Save Product",
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "prestashop_product_categories",
+          "mode": "list",
+          "cachedResultName": "prestashop_product_categories"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_product": "={{ $json[\"products[0].id\"] }}",
+            "id_category": "={{ $json[\"products[0].associations.categories\"].id }}"
+          },
+          "matchingColumns": [
+            "id_product",
+            "id_category"
+          ],
+          "schema": [
+            {
+              "id": "id_product",
+              "displayName": "id_product",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_category",
+              "displayName": "id_category",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1320,
+        200
+      ],
+      "id": "c7aeba0b-97b2-4dea-95dd-71d5b2ca1c3f",
+      "name": "Save Product Categories",
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "products[0].associations.product_features",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "products[0].id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        400
+      ],
+      "id": "bc6677ec-5ef7-45c0-bf89-2124ac98e882",
+      "name": "Split Product Features"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "products[0].associations.categories",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "products[0].id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        200
+      ],
+      "id": "4f094e7c-95ab-4b59-8892-c252fe9e3b2a",
+      "name": "Split Categories",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO prestashop_product_features\n  (id_product,id_feature,id_feature_value,feature_name,feature_value)\nVALUES\n  (\n    {{ $json[\"products[0].id\"] }},\n    {{ $json[\"products[0].associations.product_features\"].id }},\n    {{ $json[\"products[0].associations.product_features\"].id_feature_value }},\n    (SELECT name  FROM prestashop_features       WHERE id_feature={{ $json[\"products[0].associations.product_features\"].id }}),\n    (SELECT value FROM prestashop_feature_values WHERE id_feature_value={{ $json[\"products[0].associations.product_features\"].id_feature_value }})\n  )\nON CONFLICT (id_product,id_feature) DO UPDATE\n  SET id_feature_value = EXCLUDED.id_feature_value,\n      feature_name     = EXCLUDED.feature_name,\n      feature_value    = EXCLUDED.feature_value;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1320,
+        400
+      ],
+      "id": "cb779d4e-697d-40c9-bb0d-2b2d4131df3f",
+      "name": "Save Product Features",
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        200
+      ],
+      "id": "be3967b4-18a3-4788-9b4b-efbd1e66edba",
+      "name": "Rate Limit",
+      "webhookId": "8a064bc3-f500-4f21-b3d9-811987f4ca77"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Product ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Product ID": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Product Details": {
+      "main": [
+        [
+          {
+            "node": "Save Product",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Categories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Product Features",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Product": {
+      "main": [
+        []
+      ]
+    },
+    "Split Categories": {
+      "main": [
+        [
+          {
+            "node": "Save Product Categories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Product Features": {
+      "main": [
+        [
+          {
+            "node": "Save Product Features",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Product Categories": {
+      "main": [
+        []
+      ]
+    },
+    "Save Product Features": {
+      "main": [
+        []
+      ]
+    },
+    "Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "Get Product Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b451f336-5451-4836-8d0e-e23dafe2ebd8",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-21T22:47:46.565Z",
+      "updatedAt": "2025-05-21T22:47:46.565Z",
+      "id": "awZ2gIri7ry57Uqs",
+      "name": "postgresql"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
