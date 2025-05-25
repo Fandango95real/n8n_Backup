@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-05-23T10:05:28.892Z",
-  "updatedAt": "2025-05-23T16:26:13.000Z",
+  "updatedAt": "2025-05-24T12:19:00.000Z",
   "id": "qqPofSEKswPVvYfv",
   "name": "Emailing sequence",
   "active": false,
@@ -12,7 +12,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        -180
+        -220
       ],
       "id": "7b12923c-1ac8-4461-8abd-7a65b5c71581",
       "name": "When clicking ‘Test workflow’"
@@ -35,7 +35,7 @@
       "typeVersion": 2.2,
       "position": [
         220,
-        -180
+        -220
       ],
       "id": "e113fe7f-a369-46f0-ba78-d353ce819691",
       "name": "Get Prospects",
@@ -56,7 +56,7 @@
       "typeVersion": 1,
       "position": [
         440,
-        -180
+        -220
       ],
       "id": "fb7d69eb-b915-4404-8663-35fb3b6dedff",
       "name": "Split Out"
@@ -122,14 +122,14 @@
       "typeVersion": 3.2,
       "position": [
         1100,
-        -180
+        -220
       ],
       "id": "a077a1f3-b830-4ebf-a78e-3e8ff78cce3e",
       "name": "Switch"
     },
     {
       "parameters": {
-        "fromEmail": "gilles.hanotel@dagdaconsulting.fr",
+        "fromEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
         "toEmail": "={{ $('Split Out').item.json.property_e_mail }}",
         "subject": "Un partenariat local gagnant-gagnant pour vos clients",
         "emailFormat": "both",
@@ -143,8 +143,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2200,
-        -280
+        1980,
+        -320
       ],
       "id": "30631a65-053a-47aa-819a-beffa5d6dd0e",
       "name": "Send Email",
@@ -158,7 +158,7 @@
     },
     {
       "parameters": {
-        "fromEmail": "gilles.hanotel@dagdaconsulting.fr",
+        "fromEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
         "toEmail": "gilles.hanotel@gmail.com",
         "subject": "Encore un prospect bidon...",
         "html": "={{ $('Split Out').item.json.property_pr_nom }}\n{{ $('Split Out').item.json.property_nom }}\n\n{{ $('Split Out').item.json.property_societe }}",
@@ -170,7 +170,7 @@
       "typeVersion": 2.1,
       "position": [
         1320,
-        -80
+        -120
       ],
       "id": "847d5cbe-ea9c-4dca-85e3-fbd580805a4d",
       "name": "Send Email1",
@@ -220,7 +220,7 @@
       "typeVersion": 2.2,
       "position": [
         880,
-        -180
+        -220
       ],
       "id": "214910fe-a4e2-40aa-adb6-5491518a2e0e",
       "name": "Check_date"
@@ -252,7 +252,7 @@
       "typeVersion": 2.2,
       "position": [
         1540,
-        -80
+        -120
       ],
       "id": "5cce395f-57b3-4688-bc76-38dae12916e5",
       "name": "Notion",
@@ -289,8 +289,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2640,
-        -280
+        2420,
+        -320
       ],
       "id": "3bd4b317-541f-4cdd-85e3-48e8a8899a90",
       "name": "Notion1",
@@ -310,7 +310,7 @@
       "typeVersion": 2,
       "position": [
         660,
-        -180
+        -220
       ],
       "id": "d4609d3c-fe6b-4ca0-b01d-cbf8550b1014",
       "name": "Convert Notion date"
@@ -323,8 +323,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2420,
-        -280
+        2200,
+        -320
       ],
       "id": "64903bb0-6ad3-4b76-887c-df075d5f669c",
       "name": "Add 3 days from now"
@@ -336,39 +336,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1980,
-        -280
+        1760,
+        -320
       ],
       "id": "fe9bdca4-5bd3-4169-96f4-e8ab3b65c279",
       "name": "Code"
-    },
-    {
-      "parameters": {
-        "url": "=  https://data.c-g-h.net/remote.php/dav/files/fandango/WebSites/Dagda%20Consulting/Prospection/Templates/{{ $('Split Out').item.json.property_sc_nario }}_{{ $('Split Out').item.json.property_s_quence }}.txt",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "file"
-            }
-          }
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1320,
-        -280
-      ],
-      "id": "ea274a57-502b-4545-8493-1babb15ff77d",
-      "name": "Get Template File",
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "Enq6REyivJk5gMlq",
-          "name": "WebDav data.c-g-h.net"
-        }
-      }
     },
     {
       "parameters": {
@@ -378,21 +350,22 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1760,
-        -280
+        1540,
+        -320
       ],
       "id": "d958d926-7422-4059-b214-f7176f71eb6e",
       "name": "Code1"
     },
     {
       "parameters": {
-        "operation": "download"
+        "operation": "download",
+        "path": "=/WebSites/Dagda%20Consulting/Prospection/Templates{{ $('Split Out').item.json.property_sc_nario }}_{{ $('Split Out').item.json.property_s_quence }}.txt"
       },
       "type": "n8n-nodes-base.nextCloud",
       "typeVersion": 1,
       "position": [
-        1540,
-        -600
+        1320,
+        -320
       ],
       "id": "8fb79433-1a40-4925-b5b3-7d5370443006",
       "name": "Nextcloud",
@@ -442,7 +415,7 @@
       "main": [
         [
           {
-            "node": "Get Template File",
+            "node": "Nextcloud",
             "type": "main",
             "index": 0
           }
@@ -522,17 +495,6 @@
         ]
       ]
     },
-    "Get Template File": {
-      "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code1": {
       "main": [
         [
@@ -546,7 +508,13 @@
     },
     "Nextcloud": {
       "main": [
-        []
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -558,7 +526,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "508d0964-8db1-4ebb-beef-768c43a213ab",
+  "versionId": "388025de-ed95-41e0-a9a6-e3d5b9b19819",
   "triggerCount": 0,
   "tags": [
     {
