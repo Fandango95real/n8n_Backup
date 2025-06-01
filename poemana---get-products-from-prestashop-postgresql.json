@@ -1,0 +1,297 @@
+{
+  "createdAt": "2025-05-31T15:05:00.598Z",
+  "updatedAt": "2025-05-31T15:49:23.000Z",
+  "id": "4whny5NQ8Xw4OC5M",
+  "name": "Poemana - Get products from prestashop",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        75
+      ],
+      "id": "25e124c5-4727-483d-8507-e5616a881a06",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"prestashop_url\": \"https://www.poemana.com\",\n  \"db_host\": \"172.17.0.1\",\n  \"db_name\": \"poemana_seo\",\n  \"batch_size\": 50,\n  \"languages\": [1, 2],\n  \"default_shop\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        75
+      ],
+      "id": "2568e60e-9a5b-43cb-b4fc-4db773324eb9",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "options": {
+          "trim": true
+        }
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        660,
+        75
+      ],
+      "id": "7c40d74c-403a-4e12-b861-35769d7732a5",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Traiter les données converties par le nœud XML\nconst data = $input.item.json;\nconst products = [];\n\ntry {\n  // Naviguer dans la structure JSON convertie\n  if (data.prestashop && data.prestashop.products && data.prestashop.products.product) {\n    const productList = Array.isArray(data.prestashop.products.product) \n      ? data.prestashop.products.product \n      : [data.prestashop.products.product];\n    \n    console.log(`Found ${productList.length} products in API response`);\n    \n    for (let product of productList) {\n      // Dans PrestaShop, les IDs sont directement dans les attributs\n      if (product.id) {\n        const productId = typeof product.id === 'string' ? product.id : product.id.toString();\n        \n        products.push({\n          id: parseInt(productId),\n          href: `https://www.poemana.com/api/products/${productId}`,\n          reference: product.reference || '',\n          manufacturer: product.manufacturer_name ? product.manufacturer_name._ : '',\n          category_id: product.id_category_default ? product.id_category_default._ : null,\n          quantity: product.quantity ? parseInt(product.quantity._) : 0,\n          type: product.type ? product.type._ : 'simple'\n        });\n      }\n    }\n  } else {\n    console.log('Structure not found: prestashop.products.product');\n    console.log('Available keys:', Object.keys(data.prestashop || {}));\n  }\n} catch (error) {\n  console.error('Error processing converted XML:', error);\n  console.log('Full error:', error.message);\n}\n\nconsole.log(`Successfully extracted ${products.length} products`);\n\n// Retourner chaque produit comme un item séparé\nreturn products.map(product => ({ json: product }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        75
+      ],
+      "id": "546b3fc0-9915-4697-9bd6-e79bd2c88dde",
+      "name": "Extract Products",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Set\"].json[\"prestashop_url\"]}}/api/products?display=full&limit=10",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        75
+      ],
+      "id": "865d3366-d7c3-4b84-8363-babac86765ec",
+      "name": "Get Products List",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": "={{$node[\"Set\"].json[\"batch_size\"]}}",
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1100,
+        75
+      ],
+      "id": "be0a7679-a36b-4eeb-af9b-2d56ae9ca690",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        75
+      ],
+      "id": "9a7cab47-90eb-4844-a64e-4bcfb798ba34"
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"href\"]}}?display=full",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "43dee805-49e3-4dd9-925a-cee2ad841c8e",
+      "name": "Détails produit",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JJBz5DUybwiPFfpZ",
+          "name": "poemana_prod_api_ro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        0
+      ],
+      "id": "44ee2c34-451b-42c5-aca7-453c1a171831",
+      "name": "XML1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const xml2js = require('xml2js');\nconst parser = new xml2js.Parser();\n\nasync function parseProductXML(xmlData) {\n  try {\n    const result = await parser.parseStringPromise(xmlData);\n    const product = result.prestashop.product[0];\n    \n    // Extraction des données principales\n    const productData = {\n      id_product: parseInt(product.id[0]),\n      id_supplier: product.id_supplier ? parseInt(product.id_supplier[0]) : null,\n      id_manufacturer: product.id_manufacturer ? parseInt(product.id_manufacturer[0]) : null,\n      id_category_default: product.id_category_default ? parseInt(product.id_category_default[0]) : null,\n      id_shop_default: product.id_shop_default ? parseInt(product.id_shop_default[0]) : 1,\n      id_tax_rules_group: product.id_tax_rules_group ? parseInt(product.id_tax_rules_group[0]) : null,\n      on_sale: product.on_sale ? product.on_sale[0] === '1' : false,\n      online_only: product.online_only ? product.online_only[0] === '1' : false,\n      ean13: product.ean13 ? product.ean13[0] : null,\n      isbn: product.isbn ? product.isbn[0] : null,\n      upc: product.upc ? product.upc[0] : null,\n      mpn: product.mpn ? product.mpn[0] : null,\n      ecotax: product.ecotax ? parseFloat(product.ecotax[0]) : 0,\n      quantity: product.quantity ? parseInt(product.quantity[0]) : 0,\n      minimal_quantity: product.minimal_quantity ? parseInt(product.minimal_quantity[0]) : 1,\n      price: product.price ? parseFloat(product.price[0]) : 0,\n      wholesale_price: product.wholesale_price ? parseFloat(product.wholesale_price[0]) : 0,\n      reference: product.reference ? product.reference[0] : null,\n      supplier_reference: product.supplier_reference ? product.supplier_reference[0] : null,\n      location: product.location ? product.location[0] : null,\n      width: product.width ? parseFloat(product.width[0]) : 0,\n      height: product.height ? parseFloat(product.height[0]) : 0,\n      depth: product.depth ? parseFloat(product.depth[0]) : 0,\n      weight: product.weight ? parseFloat(product.weight[0]) : 0,\n      out_of_stock: product.out_of_stock ? parseInt(product.out_of_stock[0]) : 2,\n      active: product.active ? product.active[0] === '1' : false,\n      available_for_order: product.available_for_order ? product.available_for_order[0] === '1' : true,\n      available_date: product.available_date ? product.available_date[0] : null,\n      condition: product.condition ? product.condition[0] : 'new',\n      show_price: product.show_price ? product.show_price[0] === '1' : true,\n      indexed: product.indexed ? product.indexed[0] === '1' : false,\n      visibility: product.visibility ? product.visibility[0] : 'both',\n      cache_is_pack: product.cache_is_pack ? product.cache_is_pack[0] === '1' : false,\n      is_virtual: product.is_virtual ? product.is_virtual[0] === '1' : false,\n      date_add: product.date_add ? product.date_add[0] : null,\n      date_upd: product.date_upd ? product.date_upd[0] : null,\n      state: product.state ? parseInt(product.state[0]) : 1\n    };\n\n    // Extraction des données multilingues\n    const langData = [];\n    if (product.name && product.name[0].language) {\n      for (let lang of product.name[0].language) {\n        const langId = parseInt(lang.$.id);\n        langData.push({\n          id_product: productData.id_product,\n          id_lang: langId,\n          id_shop: 1,\n          name: lang._,\n          description: getLanguageValue(product.description, langId),\n          description_short: getLanguageValue(product.description_short, langId),\n          link_rewrite: getLanguageValue(product.link_rewrite, langId),\n          meta_description: getLanguageValue(product.meta_description, langId),\n          meta_keywords: getLanguageValue(product.meta_keywords, langId),\n          meta_title: getLanguageValue(product.meta_title, langId),\n          available_now: getLanguageValue(product.available_now, langId),\n          available_later: getLanguageValue(product.available_later, langId)\n        });\n      }\n    }\n\n    // Extraction des catégories\n    const categories = [];\n    if (product.associations && product.associations[0].categories && product.associations[0].categories[0].category) {\n      for (let cat of product.associations[0].categories[0].category) {\n        categories.push({\n          id_category: parseInt(cat.id[0]),\n          id_product: productData.id_product\n        });\n      }\n    }\n\n    // Extraction des images\n    const images = [];\n    if (product.associations && product.associations[0].images && product.associations[0].images[0].image) {\n      for (let img of product.associations[0].images[0].image) {\n        images.push({\n          id_image: parseInt(img.id[0]),\n          id_product: productData.id_product\n        });\n      }\n    }\n\n    // Extraction des caractéristiques\n    const features = [];\n    if (product.associations && product.associations[0].product_features && product.associations[0].product_features[0].product_feature) {\n      for (let feature of product.associations[0].product_features[0].product_feature) {\n        features.push({\n          id_feature: parseInt(feature.id[0]),\n          id_product: productData.id_product,\n          id_feature_value: parseInt(feature.id_feature_value[0])\n        });\n      }\n    }\n\n    return {\n      product: productData,\n      product_lang: langData,\n      categories: categories,\n      images: images,\n      features: features\n    };\n\n  } catch (error) {\n    console.error('Error parsing product XML:', error);\n    return null;\n  }\n}\n\nfunction getLanguageValue(field, langId) {\n  if (!field || !field[0] || !field[0].language) return null;\n  \n  const langValue = field[0].language.find(lang => parseInt(lang.$.id) === langId);\n  return langValue ? langValue._ : null;\n}\n\n// Parse le produit actuel\nconst xmlData = $input.item.binary.data ? Buffer.from($input.item.binary.data, 'base64').toString() : $input.item.json;\nconst parsedData = await parseProductXML(xmlData);\n\nreturn parsedData ? [{ json: parsedData }] : [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        0
+      ],
+      "id": "f7439f53-87e4-4efe-9b09-3bbb0e6c30cd",
+      "name": "Get Product Détails"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Get Products List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Extract Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Products List": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Products": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Détails produit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Détails produit": {
+      "main": [
+        [
+          {
+            "node": "XML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML1": {
+      "main": [
+        [
+          {
+            "node": "Get Product Détails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Product Détails": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "43152271-917f-4f45-a764-a45768336172",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-21T22:47:46.565Z",
+      "updatedAt": "2025-05-21T22:47:46.565Z",
+      "id": "awZ2gIri7ry57Uqs",
+      "name": "postgresql"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
