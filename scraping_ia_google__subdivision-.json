@@ -1,0 +1,3880 @@
+{
+  "createdAt": "2025-06-02T08:40:55.665Z",
+  "updatedAt": "2025-06-02T08:41:01.000Z",
+  "id": "TMJ6dc1eHwY09RgK",
+  "name": "Scraping_IA_Google__subdivision",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// URL de base pour la requête Google (modifiez-la selon vos besoins)\nconst baseURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDwwzjqstcIvYww_cKNuwukdDugvkv-uyc';\n\n// Récupère tous les items entrants\nconst items = $input.all();\nconst newItems = [];\n\nfor (const item of items) {\n\t// Vérifie si le token existe et n'est pas vide\n\tif (item.json.next_page_token && item.json.next_page_token.trim() !== '') {\n\t\tconst nextPageToken = item.json.next_page_token;\n\t\t// Construit la nouvelle URL en ajoutant le token encodé\n\t\tconst newUrl = `${baseURL}&pagetoken=${encodeURIComponent(nextPageToken)}`;\n\t\tnewItems.push({\n\t\t\tjson: {\n\t\t\t\thas_next_page: true,\n\t\t\t\tnext_page_token: nextPageToken,\n\t\t\t\tnew_url: newUrl\n\t\t\t}\n\t\t});\n\t} else {\n\t\tnewItems.push({\n\t\t\tjson: {\n\t\t\t\thas_next_page: false,\n\t\t\t\tnext_page_token: null,\n\t\t\t\tnew_url: null\n\t\t\t}\n\t\t});\n\t}\n}\n\n// Renvoie les nouveaux items avec la nouvelle URL\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        -480
+      ],
+      "id": "accac1b4-8d03-4e17-be99-37db489f6108",
+      "name": "Code"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -280
+      ],
+      "id": "401dd98e-a52d-46eb-b0b7-af539a05470a",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9db3c60a-529c-4c89-9ca8-49f5732acccd",
+              "leftValue": "={{ $json.has_next_page }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2360,
+        -480
+      ],
+      "id": "80e1e3b4-fed2-47c2-9712-e69b1d5ab603",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.new_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2580,
+        -480
+      ],
+      "id": "c73e708d-f511-415d-a553-035071132a71",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// URL de base pour la requête Google (modifiez-la selon vos besoins)\nconst baseURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDwwzjqstcIvYww_cKNuwukdDugvkv-uyc';\n\n// Récupère tous les items entrants\nconst items = $input.all();\nconst newItems = [];\n\nfor (const item of items) {\n\t// Vérifie si le token existe et n'est pas vide\n\tif (item.json.next_page_token && item.json.next_page_token.trim() !== '') {\n\t\tconst nextPageToken = item.json.next_page_token;\n\t\t// Construit la nouvelle URL en ajoutant le token encodé\n\t\tconst newUrl = `${baseURL}&pagetoken=${encodeURIComponent(nextPageToken)}`;\n\t\tnewItems.push({\n\t\t\tjson: {\n\t\t\t\thas_next_page: true,\n\t\t\t\tnext_page_token: nextPageToken,\n\t\t\t\tnew_url: newUrl\n\t\t\t}\n\t\t});\n\t} else {\n\t\tnewItems.push({\n\t\t\tjson: {\n\t\t\t\thas_next_page: false,\n\t\t\t\tnext_page_token: null,\n\t\t\t\tnew_url: null\n\t\t\t}\n\t\t});\n\t}\n}\n\n// Renvoie les nouveaux items avec la nouvelle URL\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        -480
+      ],
+      "id": "aa32bcd3-57bf-4888-9c29-3d02c5679df9",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "02818c80-e58c-4182-9f95-9a6e59635370",
+              "leftValue": "={{ $json.has_next_page }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3240,
+        -480
+      ],
+      "id": "a4e98b57-e5a8-4962-8d75-17380968df85",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.new_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3460,
+        -480
+      ],
+      "id": "5fabee6f-c413-46fd-b508-e5b2e7b96faf",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// On récupère la sortie du nœud précédent (items[0].json).\nconst data = items[0].json;\n\n\nlet agentId;\ntry {\n  agentId = require('crypto').randomUUID();\n} catch (e) {\n  // Fallback : 32 caractères hex aléatoires.\n  agentId = require('crypto').randomBytes(16).toString('hex');\n}\n\nlet geocodeObj;\n\n// --- CAS 1: data est un tableau ---\nif (Array.isArray(data)) {\n  if (data.length === 0) {\n    throw new Error(\"Réponse JSON inattendue : tableau vide.\");\n  }\n  // On prend le premier élément\n  geocodeObj = data[0];\n}\n// --- CAS 2: data est déjà un objet ---\nelse if (typeof data === 'object' && data !== null) {\n  geocodeObj = data; \n} \nelse {\n  throw new Error(\"Réponse JSON inattendue : ni un objet, ni un tableau.\");\n}\n\n// Maintenant, on doit trouver \"results\" à l'intérieur\n// geocodeObj doit contenir: { results: [...], status: \"OK\" } \nif (!geocodeObj.results || !Array.isArray(geocodeObj.results)) {\n  throw new Error(\"Pas de 'results' dans la réponse Geocoding.\");\n}\n\n// On a enfin le tableau \"results\" :\nconst results = geocodeObj.results;\nif (results.length === 0) {\n  throw new Error(\"Aucun résultat dans 'results'.\");\n}\n\n// (Exemple) On récupère la bounding box du premier item\nconst first = results[0];\nconst bounds = first.geometry?.bounds;\nif (!bounds || !bounds.northeast || !bounds.southwest) {\n  throw new Error(\"Impossible de déterminer la bounding box.\");\n}\n\n// lat / lng\nconst latMin = bounds.southwest.lat;\nconst latMax = bounds.northeast.lat;\nconst lngMin = bounds.southwest.lng;\nconst lngMax = bounds.northeast.lng;\n\n// On fait le reste de la logique (ex: calcul milieux, subdivision, etc.)\nconst latMid = (latMin + latMax) / 2;\nconst lngMid = (lngMin + lngMax) / 2;\n\n// Créons 4 sous-boxes en exemple :\nconst boxNW = {\n  southwest: { lat: latMid, lng: lngMin },\n  northeast: { lat: latMax, lng: lngMid },\n};\nconst boxNE = {\n  southwest: { lat: latMid, lng: lngMid },\n  northeast: { lat: latMax, lng: lngMax },\n};\nconst boxSW = {\n  southwest: { lat: latMin, lng: lngMin },\n  northeast: { lat: latMid, lng: lngMid },\n};\nconst boxSE = {\n  southwest: { lat: latMin, lng: lngMid },\n  northeast: { lat: latMid, lng: lngMax },\n};\n\n// On retourne tout dans un seul item\nreturn [\n  {\n    json: {\n      agentId,  // <- identifiant aléatoire prêt à être mémorisé\n      originalBoundingBox: {\n        northeast: bounds.northeast,\n        southwest: bounds.southwest,\n      },\n      subBoxes: {\n        NW: boxNW,\n        NE: boxNE,\n        SW: boxSW,\n        SE: boxSE,\n      },\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        -280
+      ],
+      "id": "1d6d41f9-d93b-41b7-857c-b817bc1f8c85",
+      "name": "subdivision"
+    },
+    {
+      "parameters": {
+        "url": "=https://maps.googleapis.com/maps/api/geocode/json?address=Bordeaux,France&key={API}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        -280
+      ],
+      "id": "14779377-28a7-47b8-8bce-566011762ce1",
+      "name": "geocode"
+    },
+    {
+      "parameters": {
+        "content": "## Division en x4 de surface\nRequête API google limité à 60 résultats.\n\nDonc en divisant la surface de base on multiplie le nombre de résultat (et potentiellement des doublons).",
+        "height": 740,
+        "width": 480,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        -660
+      ],
+      "id": "83037d7b-44f3-4f1c-bd04-4b045bf753e0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1700,
+        -480
+      ],
+      "id": "353d54b2-a6c2-4aa2-aeee-cc0cecc46240",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "content": "## 3 x 20 (API gg maps)",
+        "height": 740,
+        "width": 1460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3156,
+        -860
+      ],
+      "id": "f9e37dc1-7f8f-439e-aada-e9cad887cb2a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2140,
+        -480
+      ],
+      "id": "0df0864a-9dc4-471d-9e0f-0f076eca2cc3",
+      "name": "Wait",
+      "webhookId": "fb6e488b-b401-40ef-9287-129254a626f6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3020,
+        -480
+      ],
+      "id": "e5054e36-e578-4c43-8b6c-995a13ba09e2",
+      "name": "Wait1",
+      "webhookId": "b883d5eb-6561-4f9b-8841-82a8e051e179"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Récupère tous les items depuis les 3 nœuds HTTP\nconst dataHttp4 = $('HTTP Request4').all();\nconst dataHttp = $('HTTP Request').all();\nconst dataHttp1 = $('HTTP Request1').all();\n\n// 2. On fusionne tous les résultats dans un seul tableau \"allResults\"\n//    (on suppose que la réponse Google est dans item.json.results)\nlet allResults = [];\n\nfunction gatherData(items) {\n  items.forEach(item => {\n    if (item.json.results) {\n      allResults = allResults.concat(item.json.results);\n    } else {\n      // Si le champ \"results\" n'existe pas, on récupère quand même item.json\n      // (à adapter selon votre structure)\n      allResults.push(item.json);\n    }\n  });\n}\n\n// On \"fusionne\" les données des 3 noeuds\ngatherData(dataHttp4);\ngatherData(dataHttp);\ngatherData(dataHttp1);\n\n// 3. Supprimer les doublons en se basant sur \"place_id\"\nconst seen = new Set();\nconst uniqueResults = [];\n\nfor (const place of allResults) {\n  const pid = place.place_id || null;\n  if (!pid) {\n    // S'il n'y a pas de place_id, on peut décider de l'inclure quand même\n    uniqueResults.push(place);\n    continue;\n  }\n  if (!seen.has(pid)) {\n    seen.add(pid);\n    uniqueResults.push(place);\n  }\n}\n\n// 4. Formater chaque objet en vue de l'envoyer dans Airtable\n//    - On transforme \"types\" qui est un array en une chaîne séparée par une virgule\n//    - Vous pouvez ajuster les champs selon vos besoins\n\nconst output = uniqueResults.map(place => {\n  // Si place.types existe, on joint avec une virgule, sinon on laisse vide\n  const formattedTypes = Array.isArray(place.types)\n    ? place.types.join(', ')\n    : '';\n\n  return {\n    json: {\n      place_id: place.place_id || '',\n      name: place.name || '',\n      address: place.vicinity || '',\n      rating: place.rating || '',\n      user_ratings_total: place.user_ratings_total || '',\n      types: formattedTypes,  // <-- notre chaîne de texte\n      business_status : place.business_status || '',\n      lat : place.geometry.location.lat || '',\n      lng : place.geometry.location.lng || '',\n    }\n  };\n});\n\n// 5. Retourner le tableau final vers n8n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3680,
+        -480
+      ],
+      "id": "ce1feada-0993-4d5f-997c-87a8088f2e28",
+      "name": "gather"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apphEF1ZudVT3K9V2",
+          "mode": "list",
+          "cachedResultName": "Scraping Google Maps - Youtube",
+          "cachedResultUrl": "https://airtable.com/apphEF1ZudVT3K9V2"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCGXxlPVJGujtOu",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/apphEF1ZudVT3K9V2/tblCGXxlPVJGujtOu"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "place_id": "={{ $json.place_id }}",
+            "status": "={{ $json.business_status }}",
+            "avis": "={{ $json.rating }}",
+            "type": "={{ $json.types }}",
+            "longitude": "={{ $json.lng }}",
+            "latitude": "={{ $json.lat }}",
+            "Nom": "={{ $json.name }}",
+            "adresse": "={{ $json.address }}",
+            "nbr_avis": "={{ $json.user_ratings_total }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nom",
+              "displayName": "Nom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "adresse",
+              "displayName": "adresse",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "avis",
+              "displayName": "avis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nbr_avis",
+              "displayName": "nbr_avis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Thinking",
+              "displayName": "AI Thinking",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "AI Research",
+              "displayName": "AI Research",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "latitude",
+              "displayName": "latitude",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "longitude",
+              "displayName": "longitude",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "place_id",
+              "displayName": "place_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3900,
+        -480
+      ],
+      "id": "dcd7d21e-994b-4823-85cc-fbbce4433541",
+      "name": "Airtable",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## API Geocode : longitude et latitude.\nRequête à l'API google \"geocode\" permettant de récupérer la latitude et la longitude\n",
+        "height": 740,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        -860
+      ],
+      "id": "68b7f2d8-28d0-449c-a79c-853fcbcc0221",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Recerche et Analyse IA",
+        "height": 1080,
+        "width": 1040,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4656,
+        -1200
+      ],
+      "id": "0db813ec-3797-4522-80d9-1832ca229431",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Récupérer la data brute\nconst raw = items[0].json;\n\n// 2) Vérifier si c’est déjà un tableau, sinon l’envelopper\nlet data;\nif (Array.isArray(raw)) {\n  data = raw;\n} else if (typeof raw === 'object' && raw !== null) {\n  data = [ raw ];\n} else {\n  throw new Error(\"Le format d'entrée n'est ni un tableau ni un objet!\");\n}\n\n// 3) Vérifier si le tableau est vide\nif (data.length === 0) {\n  throw new Error(\"Aucune donnée subBoxes en entrée (tableau vide).\");\n}\n\n// 4) On suppose que data[0] est de la forme : { originalBoundingBox: {...}, subBoxes: {...} }\nconst subBoxItem = data[0];\nif (!subBoxItem.subBoxes) {\n  throw new Error(\"Pas de champ subBoxes dans data[0].\");\n}\n\nconst subBoxes = subBoxItem.subBoxes;\n\n// 5) Paramètres pour URL\nconst baseUrl = \"https://maps.googleapis.com/maps/api/place/nearbysearch/json\";\nconst radius = 10000;\nconst apiKey = \"API\";\n\n// Fonction utilitaire pour calculer le centre d'une boîte\nfunction getCenterOfBox(box) {\n  const latC = (box.southwest.lat + box.northeast.lat) / 2;\n  const lngC = (box.southwest.lng + box.northeast.lng) / 2;\n  return { lat: latC, lng: lngC };\n}\n\n// Fonction utilitaire pour subdiviser une boîte en 4 quadrants\nfunction subdivideBox(box) {\n  const midLat = (box.southwest.lat + box.northeast.lat) / 2;\n  const midLng = (box.southwest.lng + box.northeast.lng) / 2;\n  return {\n    'nw': {\n      southwest: { lat: midLat, lng: box.southwest.lng },\n      northeast: { lat: box.northeast.lat, lng: midLng }\n    },\n    'ne': {\n      southwest: { lat: midLat, lng: midLng },\n      northeast: { lat: box.northeast.lat, lng: box.northeast.lng }\n    },\n    'sw': {\n      southwest: { lat: box.southwest.lat, lng: box.southwest.lng },\n      northeast: { lat: midLat, lng: midLng }\n    },\n    'se': {\n      southwest: { lat: box.southwest.lat, lng: midLng },\n      northeast: { lat: midLat, lng: box.northeast.lng }\n    }\n  };\n}\n\n// 7) Construire 16 URLs en subdivisant chaque sous-boîte en 4\nconst results = [];\nfor (const outerDirection of Object.keys(subBoxes)) {\n  const outerBox = subBoxes[outerDirection];\n  // Subdivision de l'outerBox en 4 quadrants\n  const innerBoxes = subdivideBox(outerBox);\n  for (const innerDirection of Object.keys(innerBoxes)) {\n    const box = innerBoxes[innerDirection];\n    const center = getCenterOfBox(box);\n    const url = `${baseUrl}?location=${center.lat},${center.lng}`\n              + `&radius=${radius}`\n              + `&type=restaurant`\n              + `&key=${apiKey}`;\n    results.push({\n      json: {\n        direction: `${outerDirection}-${innerDirection}`,\n        boundingBox: box,\n        center,\n        url,\n      },\n    });\n  }\n}\n\n// 8) Retourner les 16 items\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        -80
+      ],
+      "id": "ec6075cc-ec01-4002-b6c8-516367d3ea2e",
+      "name": "32 URL"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Récupérer la data brute\nconst raw = items[0].json;\n\n// 2) Vérifier si c’est déjà un tableau, sinon l’envelopper\nlet data;\nif (Array.isArray(raw)) {\n  data = raw;\n} else if (typeof raw === 'object' && raw !== null) {\n  data = [ raw ];\n} else {\n  throw new Error(\"Le format d'entrée n'est ni un tableau ni un objet!\");\n}\n\n// 3) Vérifier si le tableau est vide\nif (data.length === 0) {\n  throw new Error(\"Aucune donnée subBoxes en entrée (tableau vide).\");\n}\n\n// 4) On suppose que data[0] est de la forme : { originalBoundingBox: {...}, subBoxes: {...} }\nconst subBoxItem = data[0];\nif (!subBoxItem.subBoxes) {\n  throw new Error(\"Pas de champ subBoxes dans data[0].\");\n}\n\nconst subBoxes = subBoxItem.subBoxes;\n\n// 5) Paramètres pour URL\nconst baseUrl = \"https://maps.googleapis.com/maps/api/place/nearbysearch/json\";\nconst radius = 10000;\nconst apiKey = \"API\";\n\n// Fonction utilitaire pour calculer le centre d'une boîte\nfunction getCenterOfBox(box) {\n  const latC = (box.southwest.lat + box.northeast.lat) / 2;\n  const lngC = (box.southwest.lng + box.northeast.lng) / 2;\n  return { lat: latC, lng: lngC };\n}\n\n// Fonction utilitaire pour subdiviser une boîte en 4 quadrants\nfunction subdivideBox(box) {\n  const midLat = (box.southwest.lat + box.northeast.lat) / 2;\n  const midLng = (box.southwest.lng + box.northeast.lng) / 2;\n  return {\n    'nw': {\n      southwest: { lat: midLat, lng: box.southwest.lng },\n      northeast: { lat: box.northeast.lat, lng: midLng }\n    },\n    'ne': {\n      southwest: { lat: midLat, lng: midLng },\n      northeast: { lat: box.northeast.lat, lng: box.northeast.lng }\n    },\n    'sw': {\n      southwest: { lat: box.southwest.lat, lng: box.southwest.lng },\n      northeast: { lat: midLat, lng: midLng }\n    },\n    'se': {\n      southwest: { lat: box.southwest.lat, lng: midLng },\n      northeast: { lat: midLat, lng: box.northeast.lng }\n    }\n  };\n}\n\n// 7) Construire 16 URLs en subdivisant chaque sous-boîte en 4\nconst results = [];\nfor (const outerDirection of Object.keys(subBoxes)) {\n  const outerBox = subBoxes[outerDirection];\n  // Subdivision de l'outerBox en 4 quadrants\n  const innerBoxes = subdivideBox(outerBox);\n  for (const innerDirection of Object.keys(innerBoxes)) {\n    const box = innerBoxes[innerDirection];\n    const center = getCenterOfBox(box);\n    const url = `${baseUrl}?location=${center.lat},${center.lng}`\n              + `&radius=${radius}`\n              + `&type=restaurant`\n              + `&key=${apiKey}`;\n    results.push({\n      json: {\n        direction: `${outerDirection}-${innerDirection}`,\n        boundingBox: box,\n        center,\n        url,\n      },\n    });\n  }\n}\n\n// 8) Retourner les 16 items\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        -280
+      ],
+      "id": "225f38fe-39b9-4430-88ef-6dc1430234ff",
+      "name": "16 URL"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Récupérer la data brute\nconst raw = items[0].json;\n\n// 2) Vérifier si c’est déjà un tableau, sinon l’envelopper\nlet data;\nif (Array.isArray(raw)) {\n  // raw est déjà un tableau\n  data = raw;\n} else if (typeof raw === 'object' && raw !== null) {\n  // raw est un objet qu'on place dans un tableau\n  data = [ raw ];\n} else {\n  throw new Error(\"Le format d'entrée n'est ni un tableau ni un objet!\");\n}\n\n// 3) Vérifier si le tableau est vide\nif (data.length === 0) {\n  throw new Error(\"Aucune donnée subBoxes en entrée (tableau vide).\");\n}\n\n// 4) On suppose que data[0] est de la forme : { originalBoundingBox: {...}, subBoxes: {...} }\nconst subBoxItem = data[0];\nif (!subBoxItem.subBoxes) {\n  throw new Error(\"Pas de champ subBoxes dans data[0].\");\n}\n\n// OK, on a subBoxes\nconst subBoxes = subBoxItem.subBoxes;\n\n// 5) Paramètres pour URL\nconst baseUrl = \"https://maps.googleapis.com/maps/api/place/nearbysearch/json\";\nconst radius = 10000;\nconst apiKey = \"API\";\n\n// fonction utilitaire\nfunction getCenterOfBox(box) {\n  const latC = (box.southwest.lat + box.northeast.lat) / 2;\n  const lngC = (box.southwest.lng + box.northeast.lng) / 2;\n  return { lat: latC, lng: lngC };\n}\n\n// 6) Construire 4 URLs\nconst results = [];\nfor (const direction of Object.keys(subBoxes)) {\n  const box = subBoxes[direction];\n  const center = getCenterOfBox(box);\n\n  const url = `${baseUrl}?location=${center.lat},${center.lng}`\n            + `&radius=${radius}`\n            + `&type=restaurant`\n            + `&key=${apiKey}`;\n\n  results.push({\n    json: {\n      direction,\n      boundingBox: box,\n      center,\n      url,\n    },\n  });\n}\n\n// 7) On retourne 4 items \nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        -480
+      ],
+      "id": "7ed0b15b-4453-4615-8af6-ac6e80a9fd73",
+      "name": "4 URL"
+    },
+    {
+      "parameters": {
+        "content": "## Réalisation de @growthsystemes \n\nWorkflow permettant de récupérer des informations en utilisant les API de google (google fournit des crédits gratuits), réinsertion des informations dans Airtable.\n\nPuis réexploitation des informations avec l'IA.\n\nAPI n°1 : google geocode.\nAPI n°2 : google maps API",
+        "height": 280,
+        "width": 560,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -740
+      ],
+      "id": "3cd1e40e-b61a-4e07-ad15-40a33cf61051",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "sendTo": "quentingavila@gmail.com",
+        "subject": "=Rapport Entreprise :  {{ $('filtrage pré analyse (>100 avis)').item.json.fields.Nom }}",
+        "emailType": "text",
+        "message": "={{ $('Code2').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        6412,
+        -480
+      ],
+      "id": "1434218a-dc19-4f79-be32-96103153c77b",
+      "name": "email recap",
+      "webhookId": "cd9c74c6-6f9a-4c0a-ad6c-88b4aeade1f1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "apphEF1ZudVT3K9V2",
+          "mode": "list",
+          "cachedResultName": "Scraping Google Maps - Youtube",
+          "cachedResultUrl": "https://airtable.com/apphEF1ZudVT3K9V2"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCGXxlPVJGujtOu",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/apphEF1ZudVT3K9V2/tblCGXxlPVJGujtOu"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "place_id": "={{ $('Airtable').item.json.fields.place_id }}",
+            "AI Research": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "place_id"
+          ],
+          "schema": [
+            {
+              "id": "Nom",
+              "displayName": "Nom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "adresse",
+              "displayName": "adresse",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "avis",
+              "displayName": "avis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "nbr_avis",
+              "displayName": "nbr_avis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "AI Thinking",
+              "displayName": "AI Thinking",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "AI Research",
+              "displayName": "AI Research",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "latitude",
+              "displayName": "latitude",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "longitude",
+              "displayName": "longitude",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "place_id",
+              "displayName": "place_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4716,
+        -480
+      ],
+      "id": "290b9dcf-656b-4d1f-8afe-a0c55f322518",
+      "name": "upload analyse",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('subdivision').first().json.agentId}}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        4488,
+        -260
+      ],
+      "id": "abf11549-493f-4f57-91c6-851fe627ade8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('subdivision').first().json.agentId}}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        5524,
+        -260
+      ],
+      "id": "e6aa7e9f-d4a7-42be-b652-619309eb724a",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu fait une recherche approfondi sur l'entreprise suivante, nom : {{ $json.fields.Nom }}, adresse : {{ $json.fields.adresse }}",
+        "options": {
+          "systemMessage": "=1. RÔLE\nTu es un agent IA chargé d’évaluer en continu le risque financier / conformité\net la structure capitalistique & supply-chain d’entreprises à partir de leur nom\net adresse.\n\n2. INSTRUCTIONS (PRÉFACE & STEP-BY-STEP)\nEntrée attendue :\n[\n  { \"om\": \"{{ $json.fields.Nom }}\", \"address\": \"{{ $json.fields.adresse }}\" }\n]\n\nProcessus pour chaque société :\n  2.1 Normaliser nom + adresse (trim, majuscules, caractères spéciaux).\n  2.2 Identifier l’entité légale\n      • Interroger OpenCorporates (clé : name + country).\n      • En cas de collision : choisir l’ID le plus proche de l’adresse (géocode + distance).\n  2.3 Collecter performance & risque\n      a. Télécharger les derniers bilans (CA, EBE, capitaux propres …).\n      b. Calculer : variation CA %, marge brute, ratio dettes/équité.\n      c. Scraper la presse 12 derniers mois via Perplexity Deep Research ;\n         classifier articles (positif / neutre / négatif) ; extraire alertes\n         (défaut, litige, fermeture, fraude).\n      d. Vérifier les listes sanctions & PEP (OFAC, UE, ONU).\n      e. Générer risk_score (0–100) et compliance_flag (OK / Watch / Fail)\n         selon le barème fourni en §5.\n  2.4 Reconstituer les réseaux capitalistiques & supply-chain\n      a. Interroger Orbis pour liens d’actionnariat (parents, filiales ≥ 10 %).\n      b. Extraire fournisseurs / clients majeurs ; sinon détecter partenaires\n         cités ≥ 3 fois dans la presse récente.\n      c. Construire un graphe JSON orienté\n         • nœuds  = entreprises\n         • arêtes = \"owns\" | \"supplies\" | \"buys_from\".\n      d. Calculer l’indice HHI et la profondeur maximale de chaîne\n         (longueur > 3 → dépendance critique).\n  2.5 Produire la sortie structurée (voir exemple §4).\n  2.6 Répéter pour toute la liste ; retourner l’array enrichi.\n\n3. RÈGLES & GARDE-FOUS\n  • Si bilans manquants > 2 ans → baisser risk_score de 15 pts.\n  • Si entité sur liste de sanctions → compliance_flag = \"Fail\" et risk_score = 0.\n  • Ne jamais halluciner de chiffres ; sinon \"value\": null, \"source\": \"N/A\".\n  • Dates ISO 8601 (YYYY-MM-DD) uniquement.\n  • Sortie exclusivement en JSON ; aucun texte libre, aucun émoji.\n",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        4340,
+        -480
+      ],
+      "id": "2257ec05-29f2-416b-a07c-9bd06bd21af3",
+      "name": "Agent IA Recherche1"
+    },
+    {
+      "parameters": {
+        "model": "perplexity/sonar-deep-research",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4368,
+        -260
+      ],
+      "id": "9a5d29e4-15d5-4f28-a4d1-516fa9394561",
+      "name": "OpenRouter Chat Model1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu génère un rapport clair et approfondie à partir des informations de l'entreprise suivante ",
+        "options": {
+          "systemMessage": "=1. RÔLE  \nTu es agent IA chargé de convertir un dossier de recherche\n(non-structuré, rédigé en Markdown) sur une entreprise en un **rapport d’analyse\nclair, concis et directement exploitable** par les décideurs.\n\n2. INSTRUCTIONS (PRÉFACE & STEP-BY-STEP)  \n\nVoici le dossier de recherche : {{ $('Agent IA Recherche1').item.json.output }}\n\n**Entrée attendue**  \n• Un bloc Markdown commençant par un titre de niveau 1 « # {Nom entreprise} ».  \n• Le texte contient des sous-titres (##, ###), paragraphes, listes, tableaux et\nréférences numériques entre crochets « [9][13] ».  \n• Aucune garantie d’ordre des sections.  \n\n**Processus**  \n2.1 Extraire les sections à l’aide des en-têtes Markdown :  \n  • Implantation / Localisation  \n  • Modèle / Opérations  \n  • Performance / Finance  \n  • Risques / Conformité  \n  • Réputation / Avis clients  \n  • Innovations / Stratégie  \n  (Toute section manquante est ignorée sans erreur.)  \n\n2.2 Repérer et enregistrer les **KPI** à l’intérieur des tableaux ou lignes :  \n  `chiffre d'affaires`, `marge EBITDA`, `effectif`, variation %,\n  litiges / sanctions, dépendances fournisseurs (> 30 %), avis clients %,\n  investissements prévus, etc.  \n\n2.3 Calculer :  \n a. **tendance CA** = % variation dernière période disponible.  \n b. **sentiment clients** = satisfaits – critiques.  \n c. **score risque** (0-100) = 70 – litiges*5 – sanctions*20\n  + (sentiment clients ≥ +40 ? +10 : 0) – (dépendance fournisseur critique ? 15 : 0)  \n  (borne 0-100).  \n\n2.4 Composer le **rapport final** (format Markdown strict, sans HTML) :  \n • **Titre** : « Rapport d’analyse – {Nom entreprise} – {date du jour ISO} ».  \n • **Résumé exécutif** (≤ 120 mots).  \n • **Tableau KPI** synthétique (max 6 lignes).  \n • **Analyse détaillée** :  \n  Finance | Risques & Conformité | Opérations | Expérience client |\n  Innovation & Perspectives.  \n • **Recommandations** (≤ 80 mots).  \n • **Sources** : liste numérotée « [Titre] – [Date] ».  \n • Aucune référence entre crochets dans le texte ; elles servent\n  uniquement à la section « Sources ».  \n\n3. RÈGLES & GARDE-FOUS  \n• Ne jamais inventer une donnée absente de l’entrée.  \n• Si un KPI manque : indiquer “N/A”.  \n• Pas d’emoji ni d’hyperbole.  \n• Paragraphe ≤ 70 mots, bullet ≤ 20 mots.  \n• Toute citation chiffrée doit mentionner son année ou période.  \n• Respect strict de la confidentialité : ne pas inclure de données\n personnelles identifiables.  \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        5376,
+        -480
+      ],
+      "id": "32f1dabb-7c9d-4af4-a866-753a469bf659",
+      "name": "Agent IA Analyse"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => {\n  const nbrAvis = item?.json?.fields?.nbr_avis;\n  return typeof nbrAvis === 'number' && nbrAvis > 1000;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4120,
+        -480
+      ],
+      "id": "55e1f550-358a-4e51-96d9-2a7d8ead8dee",
+      "name": "filtrage pré analyse (>100 avis)"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        5404,
+        -260
+      ],
+      "id": "8c16e9ef-c84e-47b1-b6f1-be7dbb674df3",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "folderId": "1221kiOcfnQS0FoDLi9L4cxf6JFxLNIu_",
+        "title": "=Rapport : {{ $('filtrage pré analyse (>100 avis)').item.json.fields.Nom }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        5972,
+        -480
+      ],
+      "id": "8d46f8ba-6ffc-46c8-8e6a-50b80e644ffb",
+      "name": "Rapport Analyse"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Code Node – Formatter Markdown → texte Google Docs friendly (v2)\n *\n * Entrée  : items[0].json.output  (string Markdown)\n * Sortie  : { text: \"<texte mis en forme>\" }\n */\n\nconst raw = items[0].json.output ?? '';\nif (typeof raw !== 'string') {\n\tthrow new Error('Le champ \"output\" doit être une chaîne de caractères.');\n}\n\n// ───────── 1) Décodage des \\n éventuels ─────────\nlet text = raw.replace(/\\\\n/g, '\\n').replace(/\\\\t/g, '\\t');\n\n// ───────── 2) Mise en forme des titres ─────────\ntext = text\n\t// H1  : majuscules + soulignement\n\t.replace(/^#\\s+(.+)$/gm, (m, p1) => `\\n${p1.toUpperCase()}\\n${'='.repeat(p1.length)}\\n`)\n\t// H2  : majuscules + encadrement tirets\n\t.replace(/^##\\s+(.+)$/gm, (m, p1) => `\\n${p1.toUpperCase()}\\n${'-'.repeat(p1.length)}\\n`)\n\t// H3  : majuscules simples (plus d’indentation)\n\t.replace(/^###\\s+(.+)$/gm, (m, p1) => `\\n${p1.toUpperCase()}\\n`);\n\n// ───────── 3) Puces “-” ou “*” → “• ” ─────────\ntext = text.replace(/^\\s*[-*]\\s+/gm, '• ');\n\n// ───────── 4) Tableaux Markdown → liste “Clé : Valeur” ─────────\ntext = text.replace(/^\\|(.+?)\\|$/gm, (m, p1) => {\n\t// On ignore les lignes séparatrices (---|---)\n\tif (/^\\s*[-:]+\\s*(\\|\\s*[-:]+\\s*)+$/.test(p1)) return '';\n\tconst cols = p1.split(/\\s*\\|\\s*/).map(s => s.trim());\n\tif (cols.length >= 2) {\n\t\treturn `• ${cols[0]} : ${cols[1]}`;\n\t}\n\treturn p1; // ligne étrange : fallback\n});\n\n// ───────── 5) Nettoyages divers ─────────\ntext = text\n\t.replace(/[ \\t]+$/gm, '')      // espaces fin de ligne\n\t.replace(/\\n{3,}/g, '\\n\\n');   // >2 sauts → 2\n\nreturn [\n\t{\n\t\tjson: { text },\n\t},\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5752,
+        -480
+      ],
+      "id": "40286e5f-6297-4737-9af5-16608c102236",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Code2').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        6192,
+        -480
+      ],
+      "id": "8287cb1d-0f2a-4c9b-bb8f-c81abae6599f",
+      "name": "Google Docs"
+    },
+    {
+      "parameters": {
+        "folderId": "1oQFCugDuqNBHGh6N138bzG69kwDEMfWn",
+        "title": "=Recherche : {{ $json.fields.Nom }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        4936,
+        -480
+      ],
+      "id": "537c72f5-e22d-46ee-93c8-2c02ea3c5a31",
+      "name": "Google Docs1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Agent IA Recherche1').item.json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        5156,
+        -480
+      ],
+      "id": "977d792a-7806-4e46-a439-cc70ae58d3bb",
+      "name": "Google Docs2"
+    }
+  ],
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "geocode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "gather",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "subdivision": {
+      "main": [
+        [
+          {
+            "node": "4 URL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "16 URL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "32 URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "geocode": {
+      "main": [
+        [
+          {
+            "node": "subdivision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gather": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "filtrage pré analyse (>100 avis)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4 URL": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "upload analyse": {
+      "main": [
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent IA Recherche1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent IA Analyse",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent IA Recherche1": {
+      "main": [
+        [
+          {
+            "node": "upload analyse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent IA Recherche1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent IA Analyse": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filtrage pré analyse (>100 avis)": {
+      "main": [
+        [
+          {
+            "node": "Agent IA Recherche1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent IA Analyse",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rapport Analyse": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Rapport Analyse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "email recap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs1": {
+      "main": [
+        [
+          {
+            "node": "Google Docs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs2": {
+      "main": [
+        [
+          {
+            "node": "Agent IA Analyse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Airtable": [
+      {
+        "json": {
+          "id": "recUuYOuqSEMJrNT2",
+          "createdTime": "2025-05-04T06:51:29.000Z",
+          "fields": {
+            "Nom": "Hotel Bellepierre",
+            "place_id": "ChIJ0_-pQk1-giERyI-KfTEmyig",
+            "nbr_avis": 584,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "lodging, restaurant, food, point_of_interest, establishment",
+            "adresse": "91 bis allée des Topazes, CS81055, Saint-Denis cedex",
+            "latitude": -20.8956948,
+            "longitude": 55.4470439
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rech449UfPPzNYGSh",
+          "createdTime": "2025-05-04T06:51:31.000Z",
+          "fields": {
+            "Nom": "Jeff de Bruges",
+            "place_id": "ChIJnV6HONKBeCERt_mMkQj555g",
+            "nbr_avis": 10,
+            "avis": 3.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, store, establishment",
+            "adresse": "75 Rue du Karting, Saint-Denis",
+            "latitude": -20.8928408,
+            "longitude": 55.5007373
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recGonyqrR2aNsYFk",
+          "createdTime": "2025-05-04T06:51:32.000Z",
+          "fields": {
+            "Nom": "Restaurant Vapiano Saint Denis",
+            "place_id": "ChIJD77wRh1_giERahEZ5Cd-BcQ",
+            "nbr_avis": 1355,
+            "avis": 3.5,
+            "status": "OPERATIONAL",
+            "type": "bar, night_club, restaurant, food, point_of_interest, establishment",
+            "adresse": "10 Place Sarda Garriga, Saint-Denis",
+            "latitude": -20.873448,
+            "longitude": 55.448286
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recp4liREMzXHhoqu",
+          "createdTime": "2025-05-04T06:51:32.000Z",
+          "fields": {
+            "Nom": "Lé Gadiamb",
+            "place_id": "ChIJsSahdgZ_giERYAt_G-ZrX7E",
+            "nbr_avis": 554,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "104 Rue Roland Garros, Saint-Denis",
+            "latitude": -20.881467,
+            "longitude": 55.45650500000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recBcSqH3uvmzFryk",
+          "createdTime": "2025-05-04T06:51:33.000Z",
+          "fields": {
+            "Nom": "Bowling City",
+            "place_id": "ChIJzTHABwp_giERuApGDJEvWSA",
+            "nbr_avis": 436,
+            "avis": 3.6,
+            "status": "OPERATIONAL",
+            "type": "bowling_alley, bar, night_club, restaurant, food, point_of_interest, establishment",
+            "adresse": "9 Boulevard Vauban, Saint-Denis",
+            "latitude": -20.8883333,
+            "longitude": 55.4644444
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec75b47P23N4eCbg",
+          "createdTime": "2025-05-04T06:51:33.000Z",
+          "fields": {
+            "Nom": "Saladbar Green is better",
+            "place_id": "ChIJNwGevAR_giERZKg4HAlmWPk",
+            "nbr_avis": 105,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "9 Rue Charles Gounod, Saint-Denis",
+            "latitude": -20.8763732,
+            "longitude": 55.4535525
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rectabGg9pl5DGfsi",
+          "createdTime": "2025-05-04T06:51:34.000Z",
+          "fields": {
+            "Nom": "pizzeria mammamia",
+            "place_id": "ChIJbRyyFKd_giERBnGyg1Pt1HM",
+            "nbr_avis": 12,
+            "avis": 3.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "89 Rue du Bois de Nèfles, Saint-Denis",
+            "latitude": -20.8889608,
+            "longitude": 55.4622101
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reccDtZDso6CxyZet",
+          "createdTime": "2025-05-04T06:51:34.000Z",
+          "fields": {
+            "Nom": "Better Days",
+            "place_id": "ChIJ9ezHwAB_giERCvTd5GOfpXc",
+            "nbr_avis": 207,
+            "avis": 3.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "136 Rue Jean Chatel, Saint-Denis",
+            "latitude": -20.883933,
+            "longitude": 55.45163840000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reckJ8HXpcNm0bMZL",
+          "createdTime": "2025-05-04T06:51:35.000Z",
+          "fields": {
+            "Nom": "Boulangerie Paul Barachois",
+            "place_id": "ChIJud06GwF_giERq4m_An5VYTo",
+            "nbr_avis": 458,
+            "avis": 3.8,
+            "status": "OPERATIONAL",
+            "type": "bakery, meal_takeaway, restaurant, food, point_of_interest, store, establishment",
+            "adresse": "Avenue de la Victoire",
+            "latitude": -20.8741019,
+            "longitude": 55.4469388
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recBePceiItwCuovu",
+          "createdTime": "2025-05-04T06:51:35.000Z",
+          "fields": {
+            "Nom": "Oncle Sam",
+            "place_id": "ChIJ5997dFJ-giERUwyYed5oriY",
+            "nbr_avis": 203,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "meal_delivery, restaurant, food, point_of_interest, establishment",
+            "adresse": "71 Allée des Topazes, Saint-Denis",
+            "latitude": -20.893376,
+            "longitude": 55.4431714
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "receaeXQyFGOmWFab",
+          "createdTime": "2025-05-04T06:51:36.000Z",
+          "fields": {
+            "Nom": "Le Carré",
+            "place_id": "ChIJe2XkDwB_giERvZMjp_-Rg4U",
+            "nbr_avis": 180,
+            "avis": 3.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "10 Rue Roland Garros, Saint-Denis",
+            "latitude": -20.8838274,
+            "longitude": 55.44792169999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recmH2YnIFR1kvUFq",
+          "createdTime": "2025-05-04T06:51:37.000Z",
+          "fields": {
+            "Nom": "Amorino",
+            "place_id": "ChIJZ-3GhAF_giERSmnoXBKn6D4",
+            "nbr_avis": 432,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "cafe, restaurant, food, point_of_interest, store, establishment",
+            "adresse": "26 Rue du Maréchal Leclerc, Saint-Denis",
+            "latitude": -20.8802423,
+            "longitude": 55.44948729999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recN3RA1KMAbVgETP",
+          "createdTime": "2025-05-04T06:51:37.000Z",
+          "fields": {
+            "Nom": "Le Mandarin",
+            "place_id": "ChIJj2nJj69_giERIJOp82VSxww",
+            "nbr_avis": 21,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "72 Boulevard de la Providence, Saint-Denis",
+            "latitude": -20.895946,
+            "longitude": 55.45794060000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recucM2AqROmCObuA",
+          "createdTime": "2025-05-04T06:51:38.000Z",
+          "fields": {
+            "Nom": "Green Island",
+            "place_id": "ChIJ2x67gwF_giERAl3wECwDcfQ",
+            "nbr_avis": 60,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "45 Rue du Maréchal Leclerc, Saint-Denis",
+            "latitude": -20.88001239999999,
+            "longitude": 55.44988009999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recrGYGCtaTRvv5Lv",
+          "createdTime": "2025-05-04T06:51:38.000Z",
+          "fields": {
+            "Nom": "Pomme de Pain - Saint-Denis",
+            "place_id": "ChIJG8sjaQJ_giERub4Fffsg6Bw",
+            "nbr_avis": 85,
+            "avis": 3.6,
+            "status": "OPERATIONAL",
+            "type": "bakery, restaurant, food, point_of_interest, store, establishment",
+            "adresse": "FRANCE, 15 Avenue de la Victoire, Saint-Denis",
+            "latitude": -20.8775517,
+            "longitude": 55.44828499999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recVDBIEWIMNWAaBT",
+          "createdTime": "2025-05-04T06:51:39.000Z",
+          "fields": {
+            "Nom": "Osaka974 - Restaurant Japonais",
+            "place_id": "ChIJS-5JOAd_giERAAsP-_epxPE",
+            "nbr_avis": 452,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "167 Rue Juliette Dodu, Saint-Denis",
+            "latitude": -20.8842041,
+            "longitude": 55.45354809999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reciw04H3hzdA9Sig",
+          "createdTime": "2025-05-04T06:51:39.000Z",
+          "fields": {
+            "Nom": "Le Fujiya",
+            "place_id": "ChIJwwm6hAJ_giERddBha47VwoY",
+            "nbr_avis": 185,
+            "avis": 3.3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "4 Avenue de la Victoire, Saint-Denis",
+            "latitude": -20.876235,
+            "longitude": 55.4475858
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recvFY1pYbk5UJ8rY",
+          "createdTime": "2025-05-04T06:51:40.000Z",
+          "fields": {
+            "Nom": "Le Zeneat",
+            "place_id": "ChIJ8VdZNQJ_giERr_UKj7lhSTU",
+            "nbr_avis": 153,
+            "avis": 3.3,
+            "status": "CLOSED_TEMPORARILY",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "58 Rue Jean Chatel, St Denis 97400",
+            "latitude": -20.87839779999999,
+            "longitude": 55.4497876
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recV01VJ6f4WAHesZ",
+          "createdTime": "2025-05-04T06:51:40.000Z",
+          "fields": {
+            "Nom": "Majik Glaces",
+            "place_id": "ChIJ-5xrWAF_giERxj9fja8vYls",
+            "nbr_avis": 146,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, store, establishment",
+            "adresse": "107 Rue Juliette Dodu, Saint-Denis",
+            "latitude": -20.8802694,
+            "longitude": 55.4519389
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recQnLkGBwFiwrmg7",
+          "createdTime": "2025-05-04T06:51:41.000Z",
+          "fields": {
+            "Nom": "Ô Bar",
+            "place_id": "ChIJ3YUpSAJ_giERaoNKRkU0_c4",
+            "nbr_avis": 518,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, bar, night_club, food, point_of_interest, establishment",
+            "adresse": "34 Rue de la Compagnie, Saint-Denis",
+            "latitude": -20.8781248,
+            "longitude": 55.4504563
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recYSv5DhtHYtGCAX",
+          "createdTime": "2025-05-04T06:51:41.000Z",
+          "fields": {
+            "Nom": "Aux Agapes des chandelles",
+            "place_id": "ChIJOfZBq5x_giERBaJAdf4Hdy4",
+            "nbr_avis": 11,
+            "avis": 3.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "1 impasse du bois de chandelle, Rue lory les hauts, Sainte-Clotilde",
+            "latitude": -20.8943568,
+            "longitude": 55.4816835
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recMxQDoSpNjywMRh",
+          "createdTime": "2025-05-04T06:51:42.000Z",
+          "fields": {
+            "Nom": "ALTEA CAFETERIA",
+            "place_id": "ChIJ9xiWqa2BeCERDd4JuhrI3Y0",
+            "nbr_avis": 37,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "cafe, restaurant, food, point_of_interest, establishment",
+            "adresse": "41 Rue de la Pépinière, Sainte-Marie",
+            "latitude": -20.8998955,
+            "longitude": 55.5273323
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recms7SE4BAWXLtjC",
+          "createdTime": "2025-05-04T06:51:42.000Z",
+          "fields": {
+            "Nom": "University restaurant La Bourbonnaise",
+            "place_id": "ChIJic0GmoV_giER8164Yf6vJFY",
+            "nbr_avis": 17,
+            "avis": 3.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Avenue René Cassin",
+            "latitude": -20.9022941,
+            "longitude": 55.48380179999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recamyavqJbxwbVLR",
+          "createdTime": "2025-05-04T06:51:43.000Z",
+          "fields": {
+            "Nom": "Hippopotamus",
+            "place_id": "ChIJd3KLsy-AeCERPqvCplQuA7w",
+            "nbr_avis": 1,
+            "avis": 3,
+            "status": "CLOSED_TEMPORARILY",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "6 Rue Serge Ycard, Saint-Denis",
+            "latitude": -20.90460999999999,
+            "longitude": 55.5009068
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rectKhbM9mhsVXc9C",
+          "createdTime": "2025-05-04T06:51:43.000Z",
+          "fields": {
+            "Nom": "3 Brasseurs Sainte-Marie",
+            "place_id": "ChIJrwEmLbWBeCERq7BPShe_ZBU",
+            "nbr_avis": 923,
+            "avis": 2.7,
+            "status": "OPERATIONAL",
+            "type": "bar, restaurant, food, point_of_interest, establishment",
+            "adresse": "Galerie du Centre Commercial Duparc Face du Cinéma, Sainte-Marie",
+            "latitude": -20.9001814,
+            "longitude": 55.51600500000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recSee8okEKpcwGXq",
+          "createdTime": "2025-05-04T06:51:44.000Z",
+          "fields": {
+            "Nom": "Restaurant VAN DE RIZ",
+            "place_id": "ChIJs_kF7wt_giERgGApbmLDopk",
+            "nbr_avis": 13,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "346 Rue du Maréchal Leclerc, Saint-Léger-du-Bourg-Denis",
+            "latitude": -20.8839624,
+            "longitude": 55.4645824
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recbJehkfl1W4PUoq",
+          "createdTime": "2025-05-04T06:51:44.000Z",
+          "fields": {
+            "Nom": "Bookshop Stationer Arc-en-Ciel",
+            "place_id": "ChIJB_Jl-I9_giERyGLPdurldDo",
+            "nbr_avis": 74,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "book_store, cafe, bakery, store, restaurant, food, point_of_interest, establishment",
+            "adresse": "21 Avenue Pierre Mendes France",
+            "latitude": -20.902206,
+            "longitude": 55.481098
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recY6ZePfkKC4r0lm",
+          "createdTime": "2025-05-04T06:51:45.000Z",
+          "fields": {
+            "Nom": "Pizza Uno",
+            "place_id": "ChIJ6zfh9Pp_40cRhHNK1e_z7uc",
+            "nbr_avis": 355,
+            "avis": 3.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "220 Boulevard Jean Jaurès, Saint-Denis",
+            "latitude": -20.9000517,
+            "longitude": 55.480381
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec03Xxg8Hfjg3KuI",
+          "createdTime": "2025-05-04T06:51:46.000Z",
+          "fields": {
+            "Nom": "Bertolino Pizzeria",
+            "place_id": "ChIJqURfKpt_giERxG0-SMK4-qQ",
+            "nbr_avis": 119,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "44 Rue Nantier Didiee, Sainte-Clotilde",
+            "latitude": -20.9001116,
+            "longitude": 55.48074680000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recWLLhwEw688Xmky",
+          "createdTime": "2025-05-04T06:51:46.000Z",
+          "fields": {
+            "Nom": "Le Jardin Treillager",
+            "place_id": "ChIJpwqjOoZ_giERNxRe0tuPilk",
+            "nbr_avis": 25,
+            "avis": 3.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "8 Avenue Georges Brassens",
+            "latitude": -20.9031328,
+            "longitude": 55.48821239999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recpRyJp94dXaYSph",
+          "createdTime": "2025-05-04T06:51:47.000Z",
+          "fields": {
+            "Nom": "Le Nixon",
+            "place_id": "ChIJ0bhf9iiAeCERtY_KaOIUnc0",
+            "nbr_avis": 217,
+            "avis": 3.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "17 Rue de la Martinique",
+            "latitude": -20.9039147,
+            "longitude": 55.4944686
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recstbMgAz5c43OMv",
+          "createdTime": "2025-05-04T06:51:47.000Z",
+          "fields": {
+            "Nom": "Le Ben Ile",
+            "place_id": "ChIJc3hcSqOGgiERk_f_vDw5rs8",
+            "nbr_avis": 225,
+            "avis": 4.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "1 Chemin du Cap Noir, La Possession",
+            "latitude": -20.98415809999999,
+            "longitude": 55.3849883
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec4oJ5By0L7iIoOw",
+          "createdTime": "2025-05-04T06:51:48.000Z",
+          "fields": {
+            "Nom": "Halte-là Pizza",
+            "place_id": "ChIJcxgAUhSGgiERZkBXVbQIVlE",
+            "nbr_avis": 118,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "HALTE-LÀ, 4 Rue Jean Albany, La Possession",
+            "latitude": -20.9646486,
+            "longitude": 55.3330517
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recB7Ct4o8h2xJ6dB",
+          "createdTime": "2025-05-04T06:51:48.000Z",
+          "fields": {
+            "Nom": "ti coin gourmand",
+            "place_id": "ChIJHXczuDOGgiERI-lNplGjHfE",
+            "nbr_avis": 3,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "94 Rue Mahatma Gandhi, Saint-Denis",
+            "latitude": -20.943684,
+            "longitude": 55.328927
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recR1dbSNmJIAf8kh",
+          "createdTime": "2025-05-04T06:51:49.000Z",
+          "fields": {
+            "Nom": "Les oliviers",
+            "place_id": "ChIJqYNHjxiGgiERTYwhO5Hezhg",
+            "nbr_avis": 22,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "54 Rue Louise Michel, La Possession",
+            "latitude": -20.960067,
+            "longitude": 55.3224536
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recNqzrbeCYXH1EnU",
+          "createdTime": "2025-05-04T06:51:49.000Z",
+          "fields": {
+            "Nom": "Lodge Roche Tamarin & Spa Village Nature",
+            "place_id": "ChIJN4O8JUmGgiERbos4VQTPF34",
+            "nbr_avis": 851,
+            "avis": 3.8,
+            "status": "OPERATIONAL",
+            "type": "lodging, restaurant, food, point_of_interest, establishment",
+            "adresse": "142 Chemin Boeuf Mort, La Possession",
+            "latitude": -20.9499584,
+            "longitude": 55.34122619999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recjIZPg8pqZmMVCj",
+          "createdTime": "2025-05-04T06:51:50.000Z",
+          "fields": {
+            "Nom": "Le Coup De Bol",
+            "place_id": "ChIJLRW6RcaHgiERC3KO075_JNQ",
+            "nbr_avis": 237,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "2 rue Cimendef, La Possession",
+            "latitude": -20.928849,
+            "longitude": 55.33286700000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recTOaEJp69qn0L2d",
+          "createdTime": "2025-05-04T06:51:50.000Z",
+          "fields": {
+            "Nom": "Garden Pizza",
+            "place_id": "ChIJWXlBn7CGgiERabq7GznndHY",
+            "nbr_avis": 24,
+            "avis": 4.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "21 Rue Moise Nativel,",
+            "latitude": -20.9818738,
+            "longitude": 55.3883892
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recPFGAGLchYYv31j",
+          "createdTime": "2025-05-04T06:51:51.000Z",
+          "fields": {
+            "Nom": "Ravito de 2 Bras",
+            "place_id": "ChIJ376dgY-FgiERfWFd--DkwgQ",
+            "nbr_avis": 9,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "55°23, Marianne & Cimendef, Deux Bras Mafate Coordonnées GPS: 21°00'03.7\"S, 29 1\"E, La Possession",
+            "latitude": -21.0006503,
+            "longitude": 55.3907698
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recm3BWjRfEwzUVUZ",
+          "createdTime": "2025-05-04T06:51:51.000Z",
+          "fields": {
+            "Nom": "LA FERME BELLEVUE",
+            "place_id": "ChIJ1T7m7JiGgiER1CnsstLihQ4",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Allée Neuville, Saint-Denis",
+            "latitude": -20.9861036,
+            "longitude": 55.37966489999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recQha0m5o46v5FdI",
+          "createdTime": "2025-05-04T06:51:52.000Z",
+          "fields": {
+            "Nom": "Au Café Grillé",
+            "place_id": "ChIJcwQGX9mDgiER1yfVCENzmfA",
+            "nbr_avis": 83,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Ilet à Malheur Mafate, La Possession",
+            "latitude": -21.0272558,
+            "longitude": 55.4288501
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec2K3P9JZz9TwdB9",
+          "createdTime": "2025-05-04T06:51:52.000Z",
+          "fields": {
+            "Nom": "Pizza Village du Brûlé",
+            "place_id": "ChIJ-6lPpjiBgiERvdc8ZOJ4szE",
+            "nbr_avis": 4,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "123 Route des Azalees, Saint-Denis",
+            "latitude": -20.9256411,
+            "longitude": 55.43483519999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recmxlRm15VaMqMVp",
+          "createdTime": "2025-05-04T06:51:53.000Z",
+          "fields": {
+            "Nom": "Chez Ticia",
+            "place_id": "ChIJYXAybgCFgiERAlEjprrJsdM",
+            "nbr_avis": 1,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Saint-Paul",
+            "latitude": -21.0369677,
+            "longitude": 55.4004999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recYTAd5LD25cSkCf",
+          "createdTime": "2025-05-04T06:51:54.000Z",
+          "fields": {
+            "Nom": "Le sens ciel (snacking)",
+            "place_id": "ChIJmbc2ck2BgiERjg9WGBbW5GU",
+            "nbr_avis": 8,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Route des Azalees",
+            "latitude": -20.922869,
+            "longitude": 55.435547
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec6LvcogOnCQvw15",
+          "createdTime": "2025-05-04T06:51:54.000Z",
+          "fields": {
+            "Nom": "MontGrill",
+            "place_id": "ChIJKRKdvfaHgiER5-nB0mu59uE",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "1 Chemin de la Cayenne les Hauts, Saint-Denis",
+            "latitude": -20.9190196,
+            "longitude": 55.39799660000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recI8HF6u43KOV8ya",
+          "createdTime": "2025-05-04T06:51:55.000Z",
+          "fields": {
+            "Nom": "MontPizza",
+            "place_id": "ChIJM60sFeCHgiERFmjBow7yECU",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "1 Chemin de la Cayenne les Hauts, Saint-Denis",
+            "latitude": -20.91899399999999,
+            "longitude": 55.39795239999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recnpK5x9SrsMPaWl",
+          "createdTime": "2025-05-04T06:51:55.000Z",
+          "fields": {
+            "Nom": "Chez Régis, Snack d'Îlet à Bourse",
+            "place_id": "ChIJIaNCVHaDgiERTEifRkgoVt8",
+            "nbr_avis": 8,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Ilet à Bourses, La Possession",
+            "latitude": -21.04083169999999,
+            "longitude": 55.4254702
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recVJsqUi0OpE6lT6",
+          "createdTime": "2025-05-04T06:51:56.000Z",
+          "fields": {
+            "Nom": "Epicerie Mr Yoland Louise",
+            "place_id": "ChIJzdN1GNKFgiERgkBe0sIXgFs",
+            "nbr_avis": 10,
+            "avis": 3.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "X94R+M9, Saint-Paul",
+            "latitude": -21.0433432,
+            "longitude": 55.3909009
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recEZ6Qz7BwUnjV1m",
+          "createdTime": "2025-05-04T06:51:56.000Z",
+          "fields": {
+            "Nom": "Snack-Bar du Bonheur",
+            "place_id": "ChIJka24cACHgiERba2huK41Twk",
+            "nbr_avis": 16,
+            "avis": 4.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "3 Chemin Augustin Labie, La Possession",
+            "latitude": -20.965222,
+            "longitude": 55.3368322
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reck7aklVyU1RaD1O",
+          "createdTime": "2025-05-04T06:51:57.000Z",
+          "fields": {
+            "Nom": "Kim impérial",
+            "place_id": "ChIJdbEHGwCHgiEReRH8O6aim2k",
+            "nbr_avis": 1,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "46-44 D1, La Possession",
+            "latitude": -20.9538711,
+            "longitude": 55.33981790000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recyShcHWOQOqPfoF",
+          "createdTime": "2025-05-04T06:51:57.000Z",
+          "fields": {
+            "Nom": "Pizza D'O",
+            "place_id": "ChIJV8IxOQCHgiERckLxLKz6-tU",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "44 quater, Chemin Sans Soucis",
+            "latitude": -20.9780342,
+            "longitude": 55.3344689
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recRSFfp3GbzBNzFe",
+          "createdTime": "2025-05-04T06:51:58.000Z",
+          "fields": {
+            "Nom": "Beauséjour Sport Club Restaurant Sainte-Marie",
+            "place_id": "ChIJo2VvaESAeCERy4EwnKwMGnU",
+            "nbr_avis": 60,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "71 Rue des Frangipaniers, Sainte-Marie",
+            "latitude": -20.9163473,
+            "longitude": 55.5224552
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recQoWIXjqzOR8yBs",
+          "createdTime": "2025-05-04T06:51:58.000Z",
+          "fields": {
+            "Nom": "Le Salad'Eat",
+            "place_id": "ChIJP58-pCuAeCERIyRHhs4B3Jo",
+            "nbr_avis": 1,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "31 Avenue Eudoxie Nonge",
+            "latitude": -20.8979557,
+            "longitude": 55.49498999999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reckYAGW77hF7Iahy",
+          "createdTime": "2025-05-04T06:51:59.000Z",
+          "fields": {
+            "Nom": "Elysa",
+            "place_id": "ChIJe12KO_GAeCERcmMtDdSrm0E",
+            "nbr_avis": 1,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Domaine Bois Court, 14 Chemin de Ligne, Sainte-Marie",
+            "latitude": -20.9199255,
+            "longitude": 55.5423802
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rechya7mxoF7Adou9",
+          "createdTime": "2025-05-04T06:51:59.000Z",
+          "fields": {
+            "Nom": "LA CROISSANTERIE",
+            "place_id": "ChIJz-FiVX9_giERybnEjUaOJXQ",
+            "nbr_avis": 3,
+            "avis": 3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Centre Commercial JUMBO, 42 Avenue Joseph Bedier, Saint-Denis",
+            "latitude": -20.8934907,
+            "longitude": 55.48604390000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec3DYhtw6zlUhlEI",
+          "createdTime": "2025-05-04T06:52:00.000Z",
+          "fields": {
+            "Nom": "Le Saint-Alexandre",
+            "place_id": "ChIJT9F6Iaxu5kcR9BkVu0MPmyM",
+            "nbr_avis": 30,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "bakery, restaurant, food, store, point_of_interest, establishment",
+            "adresse": "1 Avenue Joseph Bedier, Saint-Denis",
+            "latitude": -20.8924257,
+            "longitude": 55.48743049999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recTvOLunDPkdxgKe",
+          "createdTime": "2025-05-04T06:52:00.000Z",
+          "fields": {
+            "Nom": "Au coeur de grand Ilet chez Tania",
+            "place_id": "ChIJP5ruhMODgiERIgIK-ePS8v0",
+            "nbr_avis": 214,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "2 Route de Roche A Jacquot, Salazie",
+            "latitude": -21.029714,
+            "longitude": 55.476039
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recVUqHc5Zro1yeVm",
+          "createdTime": "2025-05-04T06:52:01.000Z",
+          "fields": {
+            "Nom": "Camion pizza feu de bois",
+            "place_id": "ChIJux76VWuDgiER4In04ZOcxGs",
+            "nbr_avis": 7,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "9 Rue du Pere Louis Mancel, Salazie",
+            "latitude": -21.0307954,
+            "longitude": 55.4766732
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recMqVzyEsYBx5i4O",
+          "createdTime": "2025-05-04T06:52:02.000Z",
+          "fields": {
+            "Nom": "Le Jaipur",
+            "place_id": "ChIJ3VZQlAN_giERGwcupOaABjw",
+            "nbr_avis": 287,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "48 Rue Pasteur, Saint-Denis",
+            "latitude": -20.8786869,
+            "longitude": 55.4516411
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recz3brPe3HoABgMP",
+          "createdTime": "2025-05-04T06:52:02.000Z",
+          "fields": {
+            "Nom": "SHAM'S PIZZA",
+            "place_id": "ChIJp1yekwN_giERSq3C-B0Zk-A",
+            "nbr_avis": 46,
+            "avis": 3.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "50 Rue Pasteur, Saint-Denis",
+            "latitude": -20.8786838,
+            "longitude": 55.4517327
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recce7njlvg7Z6ypm",
+          "createdTime": "2025-05-04T06:52:03.000Z",
+          "fields": {
+            "Nom": "Aux Délices de l'Orient",
+            "place_id": "ChIJPQ-nAOBt5kcRTexJvggwziE",
+            "nbr_avis": 368,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "59 Rue Juliette Dodu, Saint-Denis",
+            "latitude": -20.878022,
+            "longitude": 55.4512766
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recNBd8uRmPbRgoMR",
+          "createdTime": "2025-05-04T06:52:03.000Z",
+          "fields": {
+            "Nom": "Il Giardino D'Italia",
+            "place_id": "ChIJAbEdrgJ_giERMc1MK50mJ_Y",
+            "nbr_avis": 185,
+            "avis": 3.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "5 Rue de l'Amiral Lacaze, Saint-Denis",
+            "latitude": -20.8745234,
+            "longitude": 55.44814359999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recci6ldfQZOwc33m",
+          "createdTime": "2025-05-04T06:52:04.000Z",
+          "fields": {
+            "Nom": "Restaurant Côté Seine",
+            "place_id": "ChIJaU6TowZ_giERb6iR9Cfc-JU",
+            "nbr_avis": 124,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "54 Rue Sainte-Anne, Saint-Denis",
+            "latitude": -20.8811129,
+            "longitude": 55.45386019999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recaS6tiFEZmVO3l5",
+          "createdTime": "2025-05-04T06:52:04.000Z",
+          "fields": {
+            "Nom": "Sushi D'Art",
+            "place_id": "ChIJh1jLVht_giERH3DfWuaPj7s",
+            "nbr_avis": 268,
+            "avis": 3.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "60 Rue Pasteur, Saint-Denis",
+            "latitude": -20.8785765,
+            "longitude": 55.4522019
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recCFMzaH1ZAlxst9",
+          "createdTime": "2025-05-04T06:52:05.000Z",
+          "fields": {
+            "Nom": "Le 144",
+            "place_id": "ChIJNexKTB1_giERJN8Dy9H13LA",
+            "nbr_avis": 575,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, bar, food, point_of_interest, establishment",
+            "adresse": "12 Rue de Nice, Saint-Denis",
+            "latitude": -20.87395609999999,
+            "longitude": 55.44809530000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec6LmfXmQP3uFxeS",
+          "createdTime": "2025-05-04T06:52:05.000Z",
+          "fields": {
+            "Nom": "Le Bar à Huîtres",
+            "place_id": "ChIJW-432QJ_giERmJXf7UBOhPA",
+            "nbr_avis": 108,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "9 Rue Rontaunay, Saint-Denis",
+            "latitude": -20.8754061,
+            "longitude": 55.4496684
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recrBzDRDUVIY1wXg",
+          "createdTime": "2025-05-04T06:52:06.000Z",
+          "fields": {
+            "Nom": "Grande Italia",
+            "place_id": "ChIJXfNLawZs5kcRPGmANYw_Sag",
+            "nbr_avis": 222,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "62 Rue Alexis de Villeneuve, Saint-Denis",
+            "latitude": -20.8765226,
+            "longitude": 55.4523818
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recXi9Ff4U07EE5pa",
+          "createdTime": "2025-05-04T06:52:06.000Z",
+          "fields": {
+            "Nom": "Be Lounge",
+            "place_id": "ChIJ0eLU0QV_giERVSXyS1hAaDs",
+            "nbr_avis": 238,
+            "avis": 3.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "84 Rue Sainte-Anne, Saint-Denis",
+            "latitude": -20.8806011,
+            "longitude": 55.4559892
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recCA2owr6brrcD7F",
+          "createdTime": "2025-05-04T06:52:07.000Z",
+          "fields": {
+            "Nom": "Mediterraneo",
+            "place_id": "ChIJVRb9kAR_giER3shg56VLUrE",
+            "nbr_avis": 463,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "52 Rue Victor Mac-Auliffe, Saint-Denis",
+            "latitude": -20.8772,
+            "longitude": 55.45349640000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recyyqzLUdpwh4SiJ",
+          "createdTime": "2025-05-04T06:52:07.000Z",
+          "fields": {
+            "Nom": "Le Grand Regal",
+            "place_id": "ChIJ2RgBrQR_giERQItdUg9MI-4",
+            "nbr_avis": 144,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "14 Rue Charles Gounod, Saint-Denis",
+            "latitude": -20.8754394,
+            "longitude": 55.4531459
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec1knyigB631Y1gw",
+          "createdTime": "2025-05-04T06:52:08.000Z",
+          "fields": {
+            "Nom": "Côté Mer Réunion",
+            "place_id": "ChIJ07YlZht_giER1jGDL7xw0BU",
+            "nbr_avis": 10,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "01 Rue de la Gare Routière, Saint-Denis",
+            "latitude": -20.8737879,
+            "longitude": 55.4534278
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recZw2TqCY4qCHYnM",
+          "createdTime": "2025-05-04T06:52:09.000Z",
+          "fields": {
+            "Nom": "Al Capone Pizzeria",
+            "place_id": "ChIJmQc1unR_giERK7vbdeU5sx4",
+            "nbr_avis": 45,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "27 Rue Léopold Rambaud, Sainte-Clotilde",
+            "latitude": -20.885326,
+            "longitude": 55.470064
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recFU2ATrbR8FzJgE",
+          "createdTime": "2025-05-04T06:52:09.000Z",
+          "fields": {
+            "Nom": "resto de chris",
+            "place_id": "ChIJBRzrGzyHgiER3POqoMbX4q0",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Rue de Paris, La Possession",
+            "latitude": -20.9599787,
+            "longitude": 55.3371303
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recWOkMmgIo84J5wu",
+          "createdTime": "2025-05-04T06:52:10.000Z",
+          "fields": {
+            "Nom": "Cousin Cuisine",
+            "place_id": "ChIJl76GzCGHgiERj7rYwsUMo3k",
+            "nbr_avis": 15,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "28 RUE KARL MARX, SAINTE-THÉRÈSE, La Possession",
+            "latitude": -20.954807,
+            "longitude": 55.3387281
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recKQuRuAbOI8cc2v",
+          "createdTime": "2025-05-04T06:52:10.000Z",
+          "fields": {
+            "Nom": "chez mamie",
+            "place_id": "ChIJh2x0-0KHgiER97TgJyOM-OE",
+            "nbr_avis": 9,
+            "avis": 4.8,
+            "status": "CLOSED_TEMPORARILY",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "25 Rue Karl Marx, La Possession",
+            "latitude": -20.9547075,
+            "longitude": 55.3382096
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recw3wIXUs5N6kGXX",
+          "createdTime": "2025-05-04T06:52:11.000Z",
+          "fields": {
+            "Nom": "Le Saint-Bernard",
+            "place_id": "ChIJ-xitOQB9giERllg4YeaorXE",
+            "nbr_avis": 5,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "146 Chemin du Pere Raimbault, Saint-Denis",
+            "latitude": -20.9080144,
+            "longitude": 55.4009367
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recQqmly1jFSlPUdp",
+          "createdTime": "2025-05-04T06:52:11.000Z",
+          "fields": {
+            "Nom": "CHEZ CANDICE",
+            "place_id": "ChIJO0h5seqHgiERyg1Sh4KwC-s",
+            "nbr_avis": 24,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "41 Rue Jean Albany",
+            "latitude": -20.9564661,
+            "longitude": 55.3365123
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recZC6uV9pynX0x58",
+          "createdTime": "2025-05-04T06:52:12.000Z",
+          "fields": {
+            "Nom": "La Frakaz",
+            "place_id": "ChIJl6YeU_yHgiERoEJRlCxiM8I",
+            "nbr_avis": 12,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "12 Rue Jean Albany, La Possession",
+            "latitude": -20.9632193,
+            "longitude": 55.3337535
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recFaeLSKQIN3wpZM",
+          "createdTime": "2025-05-04T06:52:12.000Z",
+          "fields": {
+            "Nom": "Chez Toutou",
+            "place_id": "ChIJM9VaVQCHgiERumgfCgqt6X4",
+            "nbr_avis": 2,
+            "avis": 3,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "1 Ruelle Delgard, La Possession",
+            "latitude": -20.9647459,
+            "longitude": 55.3332707
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recseo5dAoAqDDfCJ",
+          "createdTime": "2025-05-04T06:52:13.000Z",
+          "fields": {
+            "Nom": "Le Chill'",
+            "place_id": "ChIJS8t24QKHgiERARMCJzUIHc4",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "HALTE-LÀ, 4 Rue Jean Albany, La Possession",
+            "latitude": -20.9646486,
+            "longitude": 55.3330517
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reci2s9QSi6N7FtMe",
+          "createdTime": "2025-05-04T06:52:13.000Z",
+          "fields": {
+            "Nom": "Delices d' Eden",
+            "place_id": "ChIJm2pkQe2HgiERumxMCvOZxDs",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "10 rue des pétrels ste Thérèse, La Possession",
+            "latitude": -20.9546945,
+            "longitude": 55.3359172
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recEUWfkowQNufFKw",
+          "createdTime": "2025-05-04T06:52:14.000Z",
+          "fields": {
+            "Nom": "Le Rougail Créole",
+            "place_id": "ChIJwY6vZk-HgiER0bRP1uj3SgE",
+            "nbr_avis": 1,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "19 Rue Juan de Nova, La Possession",
+            "latitude": -20.962744,
+            "longitude": 55.33290299999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recjJfoWT96O3E2cK",
+          "createdTime": "2025-05-04T06:52:14.000Z",
+          "fields": {
+            "Nom": "La pizzaladière",
+            "place_id": "ChIJI2nvUkV_giER5L8cvJoDrms",
+            "nbr_avis": 7,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "153-47 Rue de l'Avenir, Saint-Denis",
+            "latitude": -20.9054857,
+            "longitude": 55.40320989999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recW0EjLoCMCWEKN9",
+          "createdTime": "2025-05-04T06:52:15.000Z",
+          "fields": {
+            "Nom": "Le Maronaz Kafé Restaurant",
+            "place_id": "ChIJu6oX4v2HgiERVVevVZBG-9E",
+            "nbr_avis": 17,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "60 Rue Leconte de Lisle, La Possession",
+            "latitude": -20.9877711,
+            "longitude": 55.33130670000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recgIckNMNt1phM94",
+          "createdTime": "2025-05-04T06:52:15.000Z",
+          "fields": {
+            "Nom": "DELICE FOOD 974",
+            "place_id": "ChIJ7UihZQCHgiERefa-4NbyKh8",
+            "nbr_avis": 9,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "27 Rue Emiliano Zapata, La Possession",
+            "latitude": -20.9552653,
+            "longitude": 55.3348197
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recjSuKGgeIKwFH6z",
+          "createdTime": "2025-05-04T06:52:16.000Z",
+          "fields": {
+            "Nom": "CHEZ CALINE",
+            "place_id": "ChIJG1SNBOKFgiERma0EK5CACRo",
+            "nbr_avis": 11,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Réunion",
+            "latitude": -20.9822658,
+            "longitude": 55.33050859999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec567XGJ3hVUfeeY",
+          "createdTime": "2025-05-04T06:52:17.000Z",
+          "fields": {
+            "Nom": "Étoilée",
+            "place_id": "ChIJN-v2xn2FgiER12lQ99zixBA",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "bar, restaurant, food, point_of_interest, establishment",
+            "adresse": "19 Chemin Sainterne, Saint-Paul",
+            "latitude": -20.9948802,
+            "longitude": 55.3318698
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recawtRMSYazcp9AK",
+          "createdTime": "2025-05-04T06:52:17.000Z",
+          "fields": {
+            "Nom": "La Kaz Lucian",
+            "place_id": "ChIJjWyzFAmGgiERGV-YJaERT6U",
+            "nbr_avis": 45,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "21 Rue Louis Desjardin (Rd 4)",
+            "latitude": -20.9778256,
+            "longitude": 55.329654
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reckFgqGZPzrl1WIM",
+          "createdTime": "2025-05-04T06:52:18.000Z",
+          "fields": {
+            "Nom": "Fred Burger & Tacos",
+            "place_id": "ChIJh6v-Mu-FgiERrP_3ObsrjT0",
+            "nbr_avis": 28,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "52 Rue Roland Garros, Saint-Paul",
+            "latitude": -20.9939796,
+            "longitude": 55.33088180000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recYYp0GzZxo5LyBY",
+          "createdTime": "2025-05-04T06:52:18.000Z",
+          "fields": {
+            "Nom": "Pizza la kaz",
+            "place_id": "ChIJ_xYM-3aHgiERbnz96bzkxHk",
+            "nbr_avis": 39,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "1 Rue Etienne Regnault, Saint-Paul",
+            "latitude": -20.9782069,
+            "longitude": 55.3290623
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reczvsDvsAxjmDEYS",
+          "createdTime": "2025-05-04T06:52:19.000Z",
+          "fields": {
+            "Nom": "MadaRun Pizza",
+            "place_id": "ChIJAwZi6eWFgiERGGEZNNenMMM",
+            "nbr_avis": 29,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "28 rue Rolland Garros, zac, Chemin Mon Repos, Saint-Paul",
+            "latitude": -20.99083659999999,
+            "longitude": 55.3299537
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recGKyK7YQbRThfcn",
+          "createdTime": "2025-05-04T06:52:19.000Z",
+          "fields": {
+            "Nom": "gayar samoussa La Possession",
+            "place_id": "ChIJhbspeUWHgiERyCPbIMFkiXU",
+            "nbr_avis": 19,
+            "avis": 4.8,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "25 Rue Gervais Barret, La Possession",
+            "latitude": -20.9651105,
+            "longitude": 55.33022649999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recUSVTnZ250bm4zT",
+          "createdTime": "2025-05-04T06:52:20.000Z",
+          "fields": {
+            "Nom": "Chez Serge \"Le grand-Ilet\"",
+            "place_id": "ChIJxbr2ukuDgiERkrAJzz6D_0Y",
+            "nbr_avis": 174,
+            "avis": 4.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "44 Rue du Pere Louis Mancel, Salazie",
+            "latitude": -21.0317705,
+            "longitude": 55.4747206
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rechenAzlra4IQqjV",
+          "createdTime": "2025-05-04T06:52:20.000Z",
+          "fields": {
+            "Nom": "FRAICHEUR DES HAUTS",
+            "place_id": "ChIJNc28InuDgiERfT6tsCEIRyE",
+            "nbr_avis": 138,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "57 Rue du Pere Louis Mancel, Salazie",
+            "latitude": -21.0319253,
+            "longitude": 55.4758969
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recWg6OfGqG53tObF",
+          "createdTime": "2025-05-04T06:52:21.000Z",
+          "fields": {
+            "Nom": "Julie Sushi",
+            "place_id": "ChIJxVIYsZRleCERrX0SY5SmM4Q",
+            "nbr_avis": 2,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "1 Chemin des Bougainvillees, Saint-Denis",
+            "latitude": -20.928525,
+            "longitude": 55.4954038
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recY5LFIYULrnXwte",
+          "createdTime": "2025-05-04T06:52:21.000Z",
+          "fields": {
+            "Nom": "So Cari",
+            "place_id": "ChIJrxwUEMOBeCERk7418BSVc1s",
+            "nbr_avis": 10,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "138 Chemin Dufourg les Hauts, Saint-Denis",
+            "latitude": -20.9288548,
+            "longitude": 55.4979875
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rece7ITt1KLS6DxVU",
+          "createdTime": "2025-05-04T06:52:22.000Z",
+          "fields": {
+            "Nom": "Chez Liliane Bonald",
+            "place_id": "ChIJxUYJZhSCgiERtPecwn3OVmk",
+            "nbr_avis": 42,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "lodging, restaurant, food, point_of_interest, establishment",
+            "adresse": "29 Chemin Camp Pierrrot",
+            "latitude": -21.0328509,
+            "longitude": 55.47419719999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reckMqGzMxLo0Y5DL",
+          "createdTime": "2025-05-04T06:52:22.000Z",
+          "fields": {
+            "Nom": "Chez Anicet",
+            "place_id": "ChIJER9JyV-DgiER_5Lf486mpHQ",
+            "nbr_avis": 41,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "647 641 Route Departementale 52, Salazie",
+            "latitude": -21.0326704,
+            "longitude": 55.4702487
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec73XixxPjGZzFvJ",
+          "createdTime": "2025-05-04T06:52:23.000Z",
+          "fields": {
+            "Nom": "Le Galabé",
+            "place_id": "ChIJq0Z9eAB_giERhOLWs9wTSak",
+            "nbr_avis": 17,
+            "avis": 4.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "78 Route du Piton, Saint-Denis",
+            "latitude": -20.92501799999999,
+            "longitude": 55.47302699999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec5jeDdBYKdEync3",
+          "createdTime": "2025-05-04T06:52:23.000Z",
+          "fields": {
+            "Nom": "Pizza La Kour 2",
+            "place_id": "ChIJo58eQACBeCERrMiH8UFvc0E",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "256t Route Gabriel Macé, Saint-Denis",
+            "latitude": -20.9263387,
+            "longitude": 55.4933086
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec6jeaQgCQ4qOtuG",
+          "createdTime": "2025-05-04T06:52:24.000Z",
+          "fields": {
+            "Nom": "LE BELVEDERE",
+            "place_id": "ChIJjRAztlx5eCERhSBgbgU9n_E",
+            "nbr_avis": 71,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "179 Rue du Pere Castagnan, Salazie",
+            "latitude": -21.0286345,
+            "longitude": 55.5039391
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recAfIelTGzg0Mkrt",
+          "createdTime": "2025-05-04T06:52:24.000Z",
+          "fields": {
+            "Nom": "Le Frikassé",
+            "place_id": "ChIJQ6tKpjSBeCERvTYxza5ybPs",
+            "nbr_avis": 42,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "269A chemin Dufourg les hauts, La Bretagne",
+            "latitude": -20.92632039999999,
+            "longitude": 55.49914150000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recHBNlIJuaA8yD6a",
+          "createdTime": "2025-05-04T06:52:25.000Z",
+          "fields": {
+            "Nom": "Sarana Hôtel & Spa",
+            "place_id": "ChIJ9e01hcp5eCER5b7P5bnbA9w",
+            "nbr_avis": 352,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "lodging, spa, restaurant, food, point_of_interest, establishment",
+            "adresse": "Mare à Vieille Place, 63 Chemin du Butor, Salazie",
+            "latitude": -21.0261596,
+            "longitude": 55.5127222
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec0Hp8vOKu3o7zFR",
+          "createdTime": "2025-05-04T06:52:25.000Z",
+          "fields": {
+            "Nom": "Le Lacaussade",
+            "place_id": "ChIJ8VXWg-15eCERSntfaetLWow",
+            "nbr_avis": 19,
+            "avis": 3.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "63 Chemin du Butor, Salazie",
+            "latitude": -21.0259701,
+            "longitude": 55.5133468
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recj4ro2rLLtbOM5O",
+          "createdTime": "2025-05-04T06:52:26.000Z",
+          "fields": {
+            "Nom": "Restaurant Chez Louna",
+            "place_id": "ChIJ0yPnMPF5eCERTr3oapi5MBQ",
+            "nbr_avis": 21,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "54 Rue du Pere Castagnan, Salazie",
+            "latitude": -21.0283189,
+            "longitude": 55.51089820000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec4VnKwbOIhePWvy",
+          "createdTime": "2025-05-04T06:52:27.000Z",
+          "fields": {
+            "Nom": "La Villa Vie d’Hôte",
+            "place_id": "ChIJ0c2YOhyBeCEROCMhfHR4vkI",
+            "nbr_avis": 8,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "lodging, restaurant, food, point_of_interest, establishment",
+            "adresse": "6 Chemin des Crotons, Saint-Denis",
+            "latitude": -20.9249589,
+            "longitude": 55.49942069999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recXspTMi2s8L39Ud",
+          "createdTime": "2025-05-04T06:52:27.000Z",
+          "fields": {
+            "Nom": "Crousti'Run",
+            "place_id": "ChIJ39fPSImBeCERxEV6oTclgDk",
+            "nbr_avis": 3,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Rue d'Armor, Saint-Denis",
+            "latitude": -20.9227485,
+            "longitude": 55.49514929999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recQSGpaF6kABz1e5",
+          "createdTime": "2025-05-04T06:52:28.000Z",
+          "fields": {
+            "Nom": "SAVEURS METISSEES",
+            "place_id": "ChIJoXnsu3iAeCERpSoMs4bW0c0",
+            "nbr_avis": 2,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "64 Chemin Arthur Rimbaud, Sainte-Marie",
+            "latitude": -20.9436045,
+            "longitude": 55.5290687
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recFdKieSZQRQCNPq",
+          "createdTime": "2025-05-04T06:52:28.000Z",
+          "fields": {
+            "Nom": "Area Moka",
+            "place_id": "ChIJLXNRyhKAeCERn8fiEoxtxbs",
+            "nbr_avis": 41,
+            "avis": 3.9,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "295 Chemin Fontaine, Sainte-Marie",
+            "latitude": -20.9282586,
+            "longitude": 55.51357969999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recT0rRf7HTueY7MA",
+          "createdTime": "2025-05-04T06:52:29.000Z",
+          "fields": {
+            "Nom": "Le basilic sacré",
+            "place_id": "ChIJv23P2RJ_giERBnyhQJcUKwY",
+            "nbr_avis": 5,
+            "avis": 4.4,
+            "status": "CLOSED_TEMPORARILY",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "9 chemin des plamier, Saint-Denis",
+            "latitude": -20.9198329,
+            "longitude": 55.4916285
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recOHQxNS5avidskd",
+          "createdTime": "2025-05-04T06:52:29.000Z",
+          "fields": {
+            "Nom": "Pizza Tropicale",
+            "place_id": "ChIJu0z8C1mBeCERdz8ffcwPWgw",
+            "nbr_avis": 33,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "169 Bis Route Gabriel Macé",
+            "latitude": -20.9199984,
+            "longitude": 55.4946827
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recfcud4ZqDa0z56E",
+          "createdTime": "2025-05-04T06:52:30.000Z",
+          "fields": {
+            "Nom": "La Réserve Gourmande",
+            "place_id": "ChIJaQ6oQACBeCERc_6Bve7E91E",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "169 Bis Route Gabriel Macé, Saint-Denis",
+            "latitude": -20.919976,
+            "longitude": 55.49468299999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recU4oVOJzVuO6Wph",
+          "createdTime": "2025-05-04T06:52:30.000Z",
+          "fields": {
+            "Nom": "Villa Angelique",
+            "place_id": "ChIJ7z668AB_giERTGHKzZWA_6Y",
+            "nbr_avis": 198,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "lodging, restaurant, food, point_of_interest, establishment",
+            "adresse": "39 Rue de Paris, Saint-Denis",
+            "latitude": -20.8831204,
+            "longitude": 55.4504095
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reciskiIahRtGyDzf",
+          "createdTime": "2025-05-04T06:52:31.000Z",
+          "fields": {
+            "Nom": "Le Reflet des Iles",
+            "place_id": "ChIJb7Kn4gR_giERoEXJ4tmVJYk",
+            "nbr_avis": 791,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "114 Rue Pasteur, Saint-Denis",
+            "latitude": -20.8777232,
+            "longitude": 55.4554831
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rech6L8nRFBV8UZye",
+          "createdTime": "2025-05-04T06:52:31.000Z",
+          "fields": {
+            "Nom": "l'artocarpe",
+            "place_id": "ChIJud06GwF_giERqJFdxLX3xH0",
+            "nbr_avis": 308,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, bar, food, point_of_interest, establishment",
+            "adresse": "9 Ruelle Edouard, Saint-Denis",
+            "latitude": -20.8768211,
+            "longitude": 55.44878379999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recC6wGSy2PCpLGRy",
+          "createdTime": "2025-05-04T06:52:32.000Z",
+          "fields": {
+            "Nom": "L'Atelier de Ben",
+            "place_id": "ChIJSZTFPQJ_giERhtnvhIvvz38",
+            "nbr_avis": 331,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "10 Rue de la Compagnie, Saint-Denis",
+            "latitude": -20.8785019,
+            "longitude": 55.4489199
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recrMNVtqzO0J5uMV",
+          "createdTime": "2025-05-04T06:52:33.000Z",
+          "fields": {
+            "Nom": "Pizza Uno",
+            "place_id": "ChIJud06GwF_giEREhqs5Lyk0z0",
+            "nbr_avis": 189,
+            "avis": 3.6,
+            "status": "OPERATIONAL",
+            "type": "meal_delivery, meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "21 Rue Monthyon, Saint-Denis",
+            "latitude": -20.8874436,
+            "longitude": 55.45508239999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recVOTSViosYI2x2F",
+          "createdTime": "2025-05-04T06:52:33.000Z",
+          "fields": {
+            "Nom": "Kt-Dral",
+            "place_id": "ChIJlac0WAJ_giERe0zNwur1tlk",
+            "nbr_avis": 253,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "5 Rle St Paul, Saint-Denis",
+            "latitude": -20.877134,
+            "longitude": 55.449182
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recHAIl7k3cDksINl",
+          "createdTime": "2025-05-04T06:52:34.000Z",
+          "fields": {
+            "Nom": "Le BARJO",
+            "place_id": "ChIJFaSBzQZ_giEReTLYEObmNRw",
+            "nbr_avis": 44,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Réunion",
+            "latitude": -20.9009237,
+            "longitude": 55.409488
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recsky1vrznItrndv",
+          "createdTime": "2025-05-04T06:52:34.000Z",
+          "fields": {
+            "Nom": "La Basse Cour",
+            "place_id": "ChIJkxF6LJd_giER0cDqBHiOrfY",
+            "nbr_avis": 11,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Réunion",
+            "latitude": -20.8979338,
+            "longitude": 55.4100709
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recmwEQ3YV915gJNF",
+          "createdTime": "2025-05-04T06:52:35.000Z",
+          "fields": {
+            "Nom": "Tommy's Diner Café",
+            "place_id": "ChIJse4y4kqAeCERxBM9wCmAgVA",
+            "nbr_avis": 792,
+            "avis": 3.4,
+            "status": "OPERATIONAL",
+            "type": "bar, restaurant, food, point_of_interest, establishment",
+            "adresse": "49 Rue Michel Ange, Sainte-Marie",
+            "latitude": -20.9018847,
+            "longitude": 55.51636920000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec09LRdhRmh2IdjC",
+          "createdTime": "2025-05-04T06:52:35.000Z",
+          "fields": {
+            "Nom": "La Petite Italie",
+            "place_id": "ChIJ2wLGnkl_giERNHIx5OtTs2I",
+            "nbr_avis": 26,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "Chemin Bancoul, Saint-Denis",
+            "latitude": -20.9061709,
+            "longitude": 55.4785494
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recPP4o2TlYgFeELa",
+          "createdTime": "2025-05-04T06:52:36.000Z",
+          "fields": {
+            "Nom": "Chez Lala",
+            "place_id": "ChIJE3UWD8d_giER8GobWnO_cBA",
+            "nbr_avis": 3,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "14 Rue Roger Guichard, Saint-Denis",
+            "latitude": -20.9059138,
+            "longitude": 55.4796977
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reczb1fz9oPrt7ZFw",
+          "createdTime": "2025-05-04T06:52:36.000Z",
+          "fields": {
+            "Nom": "Pizza___up",
+            "place_id": "ChIJTW7zEAB_giERjRq4ahtXbGo",
+            "nbr_avis": 12,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "14 Rue Roger Guichard, Saint-Denis",
+            "latitude": -20.9058295,
+            "longitude": 55.479783
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rectkgg9dkkxcJyV2",
+          "createdTime": "2025-05-04T06:52:37.000Z",
+          "fields": {
+            "Nom": "Le Colorado",
+            "place_id": "ChIJgb4Vxh9_giERU2-cPmyoyuo",
+            "nbr_avis": 13,
+            "avis": 3.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Saint-Denis",
+            "latitude": -20.9046312,
+            "longitude": 55.4258746
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recrkce6V2vHgCsgh",
+          "createdTime": "2025-05-04T06:52:37.000Z",
+          "fields": {
+            "Nom": "Pizza Enzo",
+            "place_id": "ChIJh9vpbTOHgiEREd0qArOD3F4",
+            "nbr_avis": 45,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "109 Rue Pablo Neruda, La Possession",
+            "latitude": -20.9554467,
+            "longitude": 55.3319772
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec6mS6DhZzOi26Qs",
+          "createdTime": "2025-05-04T06:52:38.000Z",
+          "fields": {
+            "Nom": "Villa Manaaki - Chambre d'hôtes de charme",
+            "place_id": "ChIJXZg0kbSFgiERdR11ec0JAlg",
+            "nbr_avis": 32,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "lodging, restaurant, food, point_of_interest, establishment",
+            "adresse": "23 Chemin de la Piscine, Saint-Paul",
+            "latitude": -20.9987755,
+            "longitude": 55.3296862
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recOfGHChU9TOkiSs",
+          "createdTime": "2025-05-04T06:52:38.000Z",
+          "fields": {
+            "Nom": "Snack Combava",
+            "place_id": "ChIJ1wqidOeFgiERkke-_NWXSkk",
+            "nbr_avis": 9,
+            "avis": 3.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "65 Impasse des Jacques",
+            "latitude": -20.9824807,
+            "longitude": 55.32684250000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recAF6NAgCTPueEbB",
+          "createdTime": "2025-05-04T06:52:39.000Z",
+          "fields": {
+            "Nom": "PIZZA \"CHEZ ROCCO\"",
+            "place_id": "ChIJRfh-6uKFgiERsaDBL3dZudU",
+            "nbr_avis": 37,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "43bis Chemin Combavas, Saint-Paul",
+            "latitude": -20.9823786,
+            "longitude": 55.3267115
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recUO7hdcn16WftA4",
+          "createdTime": "2025-05-04T06:52:39.000Z",
+          "fields": {
+            "Nom": "Oh my food Réunion!",
+            "place_id": "ChIJMU-z-hmFgiERRgJh7TWZq3A",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "CLOSED_TEMPORARILY",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "32 Chemin Combavas, Saint-Paul",
+            "latitude": -20.982696,
+            "longitude": 55.3265152
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recv0qcW3rRNcAuiz",
+          "createdTime": "2025-05-04T06:52:40.000Z",
+          "fields": {
+            "Nom": "Street Food",
+            "place_id": "ChIJi2WmFk6FgiERgMCpWR_ZbaM",
+            "nbr_avis": 1,
+            "avis": 4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "13 bis Rue de l'église, Saint-Paul",
+            "latitude": -20.998536,
+            "longitude": 55.328611
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recEeENfq1uVbNEzc",
+          "createdTime": "2025-05-04T06:52:41.000Z",
+          "fields": {
+            "Nom": "Nathans pizza",
+            "place_id": "ChIJZ5hDKWeHgiERcq3Npi0NURE",
+            "nbr_avis": 4,
+            "avis": 3.3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "moulin jolie, 52 Rue Nelson Mandela, La Possession",
+            "latitude": -20.964104,
+            "longitude": 55.327575
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rectaBtXqhCLX2iaM",
+          "createdTime": "2025-05-04T06:52:41.000Z",
+          "fields": {
+            "Nom": "Le Bonlendroit",
+            "place_id": "ChIJMXY0HxeGgiERfUvMhU_KtgQ",
+            "nbr_avis": 15,
+            "avis": 4.7,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "52 Rue Nelson Mandela, La Possession",
+            "latitude": -20.964104,
+            "longitude": 55.327575
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recCLlYKA3qGJ7cal",
+          "createdTime": "2025-05-04T06:52:42.000Z",
+          "fields": {
+            "Nom": "Chez Momo",
+            "place_id": "ChIJdfVPLUSHgiERzIEJav8HrKY",
+            "nbr_avis": 8,
+            "avis": 4.4,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "8 Rue René Maillot, La Possession",
+            "latitude": -20.96375,
+            "longitude": 55.3273472
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recXSJ2TAD8bLRTfX",
+          "createdTime": "2025-05-04T06:52:42.000Z",
+          "fields": {
+            "Nom": "L'Antre Amis",
+            "place_id": "ChIJhUTXzCqHgiERO-Kv-UwV5N0",
+            "nbr_avis": 118,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "10 Rue Jean Robert, Z.A.C Moulin Joli, Centre Ekwakis",
+            "latitude": -20.9584971,
+            "longitude": 55.3285574
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recvkNP4NykMMYOfK",
+          "createdTime": "2025-05-04T06:52:43.000Z",
+          "fields": {
+            "Nom": "La caz d'alsi",
+            "place_id": "ChIJ1-cKcdaHgiERNrS4RTQXxLE",
+            "nbr_avis": 4,
+            "avis": 4.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "70 Rue Cote Ouest",
+            "latitude": -20.928142,
+            "longitude": 55.345446
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec6q9JMmvuoK2F7r",
+          "createdTime": "2025-05-04T06:52:43.000Z",
+          "fields": {
+            "Nom": "Horizon 41",
+            "place_id": "ChIJ0TaF0ZaHgiERgnzpHo1R-pQ",
+            "nbr_avis": 32,
+            "avis": 4.6,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "48 Ter CD 41, La Possession",
+            "latitude": -20.9269294,
+            "longitude": 55.3465363
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recRTXdG7P0hs7fMI",
+          "createdTime": "2025-05-04T06:52:44.000Z",
+          "fields": {
+            "Nom": "Maryline Enjoy pizzas au feu de bois",
+            "place_id": "ChIJKXeMkFKFgiERGi4WRDaEYYc",
+            "nbr_avis": 79,
+            "avis": 4.8,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "14 Rue de l'église, Saint-Paul",
+            "latitude": -20.9991285,
+            "longitude": 55.327597
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec501hieW0qVuDhj",
+          "createdTime": "2025-05-04T06:52:44.000Z",
+          "fields": {
+            "Nom": "Ze kwizine",
+            "place_id": "ChIJe5pgJwCFgiERfbmrGcPqiRk",
+            "nbr_avis": 3,
+            "avis": 4.3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "14 Rue de l'église, Saint-Paul",
+            "latitude": -20.999157,
+            "longitude": 55.32755710000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec5lKuIJO7t7GMSj",
+          "createdTime": "2025-05-04T06:52:45.000Z",
+          "fields": {
+            "Nom": "Végan hope",
+            "place_id": "ChIJCXJPI25_giERyp8VuF5uxHg",
+            "nbr_avis": 6,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "105 Route de Saint-Francois, Saint-Denis",
+            "latitude": -20.91470529999999,
+            "longitude": 55.4604787
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recVfB1BxQw6IumQh",
+          "createdTime": "2025-05-04T06:52:45.000Z",
+          "fields": {
+            "Nom": "Mamzel Douceur",
+            "place_id": "ChIJMeae6ZSBeCER4yrYP4C5kYE",
+            "nbr_avis": 9,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "169 C route Gabriel Macé La Bretagne",
+            "latitude": -20.919976,
+            "longitude": 55.49468299999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recV9aH5RXQAO9qhk",
+          "createdTime": "2025-05-04T06:52:46.000Z",
+          "fields": {
+            "Nom": "Rob's",
+            "place_id": "ChIJw_CH2NOBeCERbKktx7lrdEk",
+            "nbr_avis": 1,
+            "avis": 3,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "168 Route Gabriel Macé, Saint-Denis",
+            "latitude": -20.9191972,
+            "longitude": 55.49403030000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec2ucTE5CshjHvDo",
+          "createdTime": "2025-05-04T06:52:46.000Z",
+          "fields": {
+            "Nom": "Le Jamblon Terrasse",
+            "place_id": "ChIJH1NjAB-AeCER0ldmITTSh4U",
+            "nbr_avis": 188,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "135 Route Gabriel Macé, Saint-Denis",
+            "latitude": -20.9185999,
+            "longitude": 55.4944872
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recfZywIpqeWI0Ohf",
+          "createdTime": "2025-05-04T06:52:47.000Z",
+          "fields": {
+            "Nom": "Food Truck Réunionnais - LA BRETAGNE",
+            "place_id": "ChIJ79Ly5guBeCERGjV62KOKJ-I",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "148 Route Gabriel Macé, Saint-Denis",
+            "latitude": -20.917641,
+            "longitude": 55.4941437
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recIqVJL7K9RqCzWd",
+          "createdTime": "2025-05-04T06:52:47.000Z",
+          "fields": {
+            "Nom": "Pizzeria de la Bretagne",
+            "place_id": "ChIJG5cf5xyAeCERHOt4SC1ZCe0",
+            "nbr_avis": 17,
+            "avis": 4.1,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "117 Route Gabriel Macé, Sainte-Clotilde",
+            "latitude": -20.9171779,
+            "longitude": 55.4938912
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recDKJC0Ifp2UeULj",
+          "createdTime": "2025-05-04T06:52:48.000Z",
+          "fields": {
+            "Nom": "Restaurant de la Bretagne",
+            "place_id": "ChIJ6_oLGMmBeCER9yCa0iFnKdc",
+            "nbr_avis": 39,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "35 Chemin De La Grotte",
+            "latitude": -20.9170162,
+            "longitude": 55.49347239999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rectx7nuAWUcVll4U",
+          "createdTime": "2025-05-04T06:52:49.000Z",
+          "fields": {
+            "Nom": "Mia Pizza Bella",
+            "place_id": "ChIJh8CocyCBeCERT2mpwmB5OVM",
+            "nbr_avis": 1,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "3 Route de la Confiance, Sainte-Marie",
+            "latitude": -20.9265668,
+            "longitude": 55.5209062
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recWA0LC2R4d2SbJW",
+          "createdTime": "2025-05-04T06:52:49.000Z",
+          "fields": {
+            "Nom": "BARAK",
+            "place_id": "ChIJ5dDsHJN_giERUyIvu60gz5o",
+            "nbr_avis": 6,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "192 Avenue Marcel Hoarau, Sainte-Clotilde",
+            "latitude": -20.9136207,
+            "longitude": 55.4836707
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec66HjaiUbwsnYzK",
+          "createdTime": "2025-05-04T06:52:50.000Z",
+          "fields": {
+            "Nom": "Mon Burger",
+            "place_id": "ChIJ35jBWY2BeCER_qwvaPXpWy0",
+            "nbr_avis": 31,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "92 Rue Medard, Sainte-Marie",
+            "latitude": -20.92515,
+            "longitude": 55.518955
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recR0BpjEwlsEWy5e",
+          "createdTime": "2025-05-04T06:52:50.000Z",
+          "fields": {
+            "Nom": "Les 2 Dragons GM",
+            "place_id": "ChIJTcOqhzmBeCERbHQG3_4I8EI",
+            "nbr_avis": 5,
+            "avis": 4.2,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "129 Rue Medard, Sainte-Marie",
+            "latitude": -20.9254442,
+            "longitude": 55.5195148
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec3fbUV3gaFcIHZQ",
+          "createdTime": "2025-05-04T06:52:51.000Z",
+          "fields": {
+            "Nom": "Julien Tarmalingom chef à domicile 974",
+            "place_id": "ChIJzX8D5N-BeCERi1WKWU3d1Ps",
+            "nbr_avis": 20,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "Rue Luc Donat, Sainte-Marie",
+            "latitude": -20.92501919999999,
+            "longitude": 55.51906200000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recHRFcsVlzE57zqQ",
+          "createdTime": "2025-05-04T06:52:51.000Z",
+          "fields": {
+            "Nom": "Massilia Pizza",
+            "place_id": "ChIJLzLVKACBeCER1JBMkg5pj-Q",
+            "nbr_avis": 1,
+            "avis": 1,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "18 Rue Antoine Roussin, Saint-Denis",
+            "latitude": -20.9151632,
+            "longitude": 55.4968882
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recJXbZvim27ll0vt",
+          "createdTime": "2025-05-04T06:52:52.000Z",
+          "fields": {
+            "Nom": "GOÛT ÇA",
+            "place_id": "ChIJEZm8QOiBeCERkMksQsLR-ec",
+            "nbr_avis": 6,
+            "avis": 4.8,
+            "status": "CLOSED_TEMPORARILY",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "44 Rue Medard, Sainte-Marie",
+            "latitude": -20.9229108,
+            "longitude": 55.5172949
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recpfIvYyzwgPpfsg",
+          "createdTime": "2025-05-04T06:52:52.000Z",
+          "fields": {
+            "Nom": "Sunset Pizza",
+            "place_id": "ChIJMfGaSgB_giER2MhRrhM07zA",
+            "nbr_avis": 0,
+            "avis": 0,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "188 Avenue Marcel Hoarau, Saint-Denis",
+            "latitude": -20.912514,
+            "longitude": 55.48399300000001
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reckxYXGwv9tkf9dy",
+          "createdTime": "2025-05-04T06:52:53.000Z",
+          "fields": {
+            "Nom": "Jani Snack",
+            "place_id": "ChIJ0cyX-95_giERm-7BojOPmvs",
+            "nbr_avis": 6,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "237 Bis Route de Bois de Nèfles, Saint-Denis",
+            "latitude": -20.9121759,
+            "longitude": 55.4743818
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recdxVciUHwjqUUVT",
+          "createdTime": "2025-05-04T06:52:53.000Z",
+          "fields": {
+            "Nom": "PIZZA FACTORY",
+            "place_id": "ChIJpysJNdmBeCERVn9KxMWo0vk",
+            "nbr_avis": 2,
+            "avis": 5,
+            "status": "OPERATIONAL",
+            "type": "meal_takeaway, restaurant, food, point_of_interest, establishment",
+            "adresse": "83 Chemin du Plateau, Saint-Denis",
+            "latitude": -20.9171264,
+            "longitude": 55.50676989999999
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recDOhOtAyyFKakZV",
+          "createdTime": "2025-05-04T06:52:54.000Z",
+          "fields": {
+            "Nom": "Pizza Gongy",
+            "place_id": "ChIJ27j1k4x_giEREpDY445zQCY",
+            "nbr_avis": 39,
+            "avis": 4.5,
+            "status": "OPERATIONAL",
+            "type": "restaurant, food, point_of_interest, establishment",
+            "adresse": "177 Avenue Marcel Hoarau, Sainte-Clotilde",
+            "latitude": -20.9119635,
+            "longitude": 55.4850741
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "e8a3e648-c302-4122-bb92-b10624d356db",
+  "triggerCount": 0,
+  "tags": []
+}
