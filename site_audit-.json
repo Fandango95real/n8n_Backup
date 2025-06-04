@@ -1,0 +1,312 @@
+{
+  "createdAt": "2025-06-03T07:43:27.364Z",
+  "updatedAt": "2025-06-03T21:46:04.000Z",
+  "id": "2UzG7LeqhyS8EmGZ",
+  "name": "Site_audit",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "84e0cf28-6fc9-4805-8759-0863f21bab62",
+        "options": {
+          "ignoreBots": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9a326b0e-2871-4967-8728-4470ea54c4ba",
+      "name": "Webhook",
+      "webhookId": "84e0cf28-6fc9-4805-8759-0863f21bab62"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  \n  item.json.name = $input.first().json.body.name;\n  item.json.email = $input.first().json.body.email;\n  item.json.site = $input.first().json.body.url;\n\n  return item;\n})\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3646e8a0-b5ed-4ed2-9daf-9ab780a17048",
+      "name": "Settings"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu es « AuditWebBot », un expert en analyse de sites web avec plus de 10 années d'expérience en UX/UI, SEO et marketing digital. Tu utilises en entrée le site internet suivant :  {{ $json.site }}\n",
+        "options": {
+          "systemMessage": "=### 1 — Rôle de l’agent\nTu es « AuditWebBot », un expert en analyse de sites web avec plus de 10 années d'expérience en UX/UI, SEO et marketing digital.  \nTon objectif est d'analyser un site web sous quatre angles complémentaires :\n\n1. UX/design (expérience utilisateur et ergonomie)\n2. SEO (référencement naturel)\n3. Marketing digital (pertinence du message, ciblage, conversion)\n4. Legal (conformité RGPD)\n\nPuis de consolider ces analyses dans un rapport synthétique contenant des recommandations hiérarchisées selon l'effort et l'impact attendu.\n\n\n### 2 — Instructions (préface + pas-à-pas)\nPréface : Réponds toujours en français, sois factuel, concis.  \nPas-à-pas :\n1. Analyse le site web suivant :  {{ $json.site }}\n2. Réalise successivement :\n   a. Une analyse UX/design : navigation, hiérarchie de l'information, accessibilité, responsive design, etc.\n   b. Une analyse SEO : structure HTML, balises, performance, indexation, contenu, backlinks, etc.\n   c. Une analyse marketing : clarté du message, adéquation avec la cible, proposition de valeur, éléments de réassurance, CTA, etc.\n   d. Une analyse légale : présence et vérification sommaire des mentions légales.\n3. Identifie pour chaque axe les points positifs, les points à améliorer, les priorités d'action.\n4. Propose un plan d'action synthétique sous forme de tableau, avec pour chaque recommandation :\n   * Priorité (court / moyen / long terme)\n   * Niveau de difficulté (faible, moyen, élevé)\n   * Impact attendu (faible, moyen, fort)\nTri le tableau par priorité (de court à long terme)\n5. Justifie chaque recommandation avec des exemples ou un raisonnement factuel.\n6. Signale toute information manquante ou incertaine avec la clé \"limitations\".\n\n### 3 — Règles à respecter\n• Aucune donnée personnelle sensible ne doit être collectée ou révélée.  \n• Si le site est inaccessible : indique clairement les raisons qui empêchent ton analyse et arrête-toi proprement.  \n• Limite la profondeur de crawl à 10 pages pour éviter la surcharge.  \n• N’invente jamais de chiffres ; si un élément est introuvable, marque “Non Disponible”.  \n• Gros mot / contenu illicite détecté ? Rédige “[contenu modéré]” et poursuis l’analyse.  \n• Respecte la longueur maximum : 5000 tokens de sortie.\n\n### 4 - Format attendu\n- Structure ta réponse sous forme de rapport structuré avec des sections clairement délimitées.\n- Utilise un ton professionnel, objectif et constructif.\n\nA la fin du rapport rappelle qu'ayant été généré de manière automatique, ce rapport est sujet à erreur et que si le client souhaite un rapport complet et détaillé, il peut contacter directement DAGDA Consulting par mail (contact@dagdaconsulting.fr) ou via le site web.",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "d172a06f-a302-441b-a1b8-6b97a3a189c2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/chatgpt-4o-latest",
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        528,
+        220
+      ],
+      "id": "8eb41006-f036-4a9a-a9d1-c1b691ffd764",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "wcGfU3tMg0EGEz0D",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
+        "toEmail": "={{ $('Settings').item.json.email }}",
+        "subject": "=Audit rapide du site {{ $('Settings').item.json.site }}",
+        "emailFormat": "both",
+        "text": "=⚠️ Note importante – Analyse générée automatiquement\nCe rapport d’analyse a été généré automatiquement à l’aide d’un agent d’intelligence artificielle.\nIl repose sur une interprétation automatisée du contenu public du site web à la date de l’analyse.\n\nBien que l’IA s’appuie sur des principes reconnus en UX, SEO et marketing digital, certains éléments peuvent être partiels, approximatifs ou nécessiter une validation humaine.\nNous vous invitons à considérer ce document comme une base de réflexion et non comme un diagnostic définitif.\n\nPour un audit approfondi et personnalisé, n’hésitez pas à nous contacter.\n-------------------------------------------------------------------------\n\n{{ $('Markdown').item.json.output }}",
+        "html": "=<p><strong>⚠️ Note importante – Analyse générée automatiquement</strong></p>\n<p>Ce rapport d’analyse a été généré automatiquement à l’aide d’un agent d’intelligence artificielle.</p>\n<p>Il repose sur une interprétation automatisée du contenu public du site web à la date de l’analyse.</p>\n\n<p>Bien que l’IA s’appuie sur des principes reconnus en UX, SEO et marketing digital, certains éléments peuvent être partiels, approximatifs ou nécessiter une validation humaine.</p>\n<p>Nous vous invitons à considérer ce document comme une base de réflexion et non comme un diagnostic définitif.</p>\n\n<p>Pour un audit approfondi et personnalisé, n’hésitez pas à nous contacter.</p>\n<hr />\n<br><br>\n{{ $('Markdown').item.json.data }}",
+        "options": {
+          "appendAttribution": false,
+          "bccEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
+          "replyTo": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1256,
+        0
+      ],
+      "id": "30ed3e3d-12fc-4637-9cf5-6de6eefa07e4",
+      "name": "Send Email",
+      "webhookId": "5d87e8d4-0d01-4d90-abbd-39c1ef062d94",
+      "credentials": {
+        "smtp": {
+          "id": "OCcMFTbzJ3Q4jkW3",
+          "name": "SMTP gilles.hanotel@dagdaconsulting.fr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.output }}",
+        "options": {
+          "emoji": true,
+          "tables": true
+        }
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        816,
+        0
+      ],
+      "id": "96076a3c-98c2-4be9-b354-9a86d444c1c9",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apppJRudq3uDIkveb",
+          "mode": "list",
+          "cachedResultName": "Prospection",
+          "cachedResultUrl": "https://airtable.com/apppJRudq3uDIkveb"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblZktML5yhvmSvbJ",
+          "mode": "list",
+          "cachedResultName": "audits_rapides",
+          "cachedResultUrl": "https://airtable.com/apppJRudq3uDIkveb/tblZktML5yhvmSvbJ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Resultat": "={{ $json.output }}",
+            "Nom": "={{ $('Settings').item.json.name }}",
+            "Email": "={{ $('Settings').item.json.email }}",
+            "url_audit": "={{ $('Settings').item.json.site }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nom",
+              "displayName": "Nom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url_audit",
+              "displayName": "url_audit",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Resultat",
+              "displayName": "Resultat",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "1a44dd50-fdd1-4cae-950f-08677c973ba0",
+      "name": "Airtable - create prospects",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "rECFG5WMPWa9eyH9",
+          "name": "Airtable Dagda oauth"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Airtable - create prospects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - create prospects": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "f56a11b4-7ac7-4dcf-9590-4c27ca1bfcc8",
+  "triggerCount": 1,
+  "tags": []
+}
