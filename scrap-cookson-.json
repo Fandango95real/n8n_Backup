@@ -1,0 +1,78 @@
+{
+  "createdAt": "2025-06-03T22:00:24.696Z",
+  "updatedAt": "2025-06-03T22:32:08.000Z",
+  "id": "AYMWVTGITAfnLKDQ",
+  "name": "Scrap cookson",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Product",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Ref",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "429ea591-4733-469b-9203-0f20cd424151",
+      "name": "On form submission",
+      "webhookId": "04474dca-b58f-4b9e-9375-162af6cb2aa8"
+    },
+    {
+      "parameters": {
+        "attributesInputMode": "json",
+        "proxyCountry": "France",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-aiscraper.aiScraper",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "58a84225-431f-4eb1-9c7f-48cdd5cf77dc",
+      "name": "AI Scraper",
+      "credentials": {
+        "aiScraperApi": {
+          "id": "9tPQfy7bFT2dobwk",
+          "name": "PARSERA - AI Scraper fandango95 account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Scraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b98a09da-7137-4219-b067-c2be1cd1de30",
+  "triggerCount": 0,
+  "tags": []
+}
