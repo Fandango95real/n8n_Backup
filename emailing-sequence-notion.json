@@ -1,21 +1,89 @@
 {
   "createdAt": "2025-05-23T10:05:28.892Z",
-  "updatedAt": "2025-05-24T12:19:00.000Z",
+  "updatedAt": "2025-06-04T23:00:23.000Z",
   "id": "qqPofSEKswPVvYfv",
   "name": "Emailing sequence",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
+      "parameters": {
+        "fromEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
+        "toEmail": "={{ $json.emailProspect }}",
+        "subject": "Un partenariat local gagnant-gagnant pour vos clients",
+        "html": "={{ $json.data }}",
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "gilles.hanotel@dagdaconsulting.fr"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1380,
+        -580
+      ],
+      "id": "30631a65-053a-47aa-819a-beffa5d6dd0e",
+      "name": "Send Email",
+      "webhookId": "6516cea2-d227-430b-868e-565a370e7f5f",
+      "credentials": {
+        "smtp": {
+          "id": "OCcMFTbzJ3Q4jkW3",
+          "name": "SMTP gilles.hanotel@dagdaconsulting.fr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let date = new Date(); \nlet daysToAdd = 3;\nlet added = 0;\n\nwhile (added < daysToAdd) {\n  date.setDate(date.getDate() + 1);\n  // 0 = dimanche, 6 = samedi\n  if (date.getDay() !== 0 && date.getDay() !== 6) {\n    added++;\n  }\n}\n\n// Format ISO pour Notion (exemple : 2025-05-29T00:00:00.000Z)\nconst notionDate = date.toISOString();\n\nreturn { \n    id: $('Markdown').item.json.idPageNotion,\n    seq: $('Markdown').item.json.sequence,\n    nextdate: notionDate \n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -580
+      ],
+      "id": "64903bb0-6ad3-4b76-887c-df075d5f669c",
+      "name": "Add 3 days from now"
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.content }}",
+        "options": {
+          "emoji": true,
+          "simpleLineBreaks": true,
+          "tables": true
+        }
+      },
+      "type": "n8n-nodes-base.markdown",
       "typeVersion": 1,
       "position": [
-        0,
-        -220
+        1160,
+        -580
       ],
-      "id": "7b12923c-1ac8-4461-8abd-7a65b5c71581",
-      "name": "When clicking ‘Test workflow’"
+      "id": "97a8b412-78ea-44e7-8d99-e1c77ee7f922",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -140,
+        -480
+      ],
+      "id": "7f8ac4fb-0415-40e0-8fa6-20523da5f392",
+      "name": "Schedule Trigger"
     },
     {
       "parameters": {
@@ -29,15 +97,25 @@
           "cachedResultUrl": "https://www.notion.so/1fc0e4a69b5880b7b6d9d03c8e3a321f"
         },
         "returnAll": true,
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Next Date|date",
+              "condition": "on_or_before",
+              "date": "={{ $now.toISOString().split(\"T\")[0] }}"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        220,
-        -220
+        80,
+        -480
       ],
-      "id": "e113fe7f-a369-46f0-ba78-d353ce819691",
+      "id": "07f589a5-e887-4d11-ad5d-aec6b22cee1b",
       "name": "Get Prospects",
       "credentials": {
         "notionApi": {
@@ -55,175 +133,62 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        440,
-        -220
+        300,
+        -480
       ],
-      "id": "fb7d69eb-b915-4404-8663-35fb3b6dedff",
-      "name": "Split Out"
+      "id": "16b2024c-38be-40cf-8102-b0a280b2a825",
+      "name": "Split Out1"
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Split Out').item.json.property_sc_nario }}",
-                    "rightValue": "Comptable",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "5e6ea3c6-19ec-41b6-ba24-dd72a6280542"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "Comptable"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "a27a18fd-a288-48d1-8187-96510a88cafd",
-                    "leftValue": "={{ $('Split Out').item.json.property_sc_nario }}",
-                    "rightValue": "Farfelu",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "Farfelu"
-            }
-          ]
-        },
-        "options": {}
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1) On récupère les propriétés du prospect\nconst scenario   = $json.property_sc_nario;    // ex. \"ssii\"\nconst sequence   = $json.property_s_quence;    // ex. 1\nconst fileName   = `${scenario}_${sequence}`;\nconst notionPageId = $json.id;\n\n// 2) Construire l'URL WebDAV vers Nextcloud\n//    Attention : adapter \"https://nextcloud.mondomaine.com/remote.php/webdav/templates/\"\nconst webdavBase = \"/WebSites/Dagda_Consulting/Prospection/Templates/\";                 \nconst templateURL = `${webdavBase}${fileName}.md`;\n\n// 3) Générer l'URL de tracking pour ce prospect\n//    → On va pointer vers un Webhook n8n qu’on créera plus bas.\n//    Bien penser à remplacer \"votre-n8n.mondomaine.com\" par le domaine réel (ou IP) de votre instance n8n.\n//    On encodera notionPageId et sequence en query params.\nconst trackingUrl = `https://n8n.dagdaconsulting.fr/webhook/dagda_track-open?Id=${encodeURIComponent(notionPageId)}&seq=${sequence}`;\n\n// 3) On renvoie ces infos pour les nœuds suivants\nreturn {\n  json: {\n    idPageNotion: $json[\"id\"],    // nécessaire pour la mise à jour ultérieure\n    scenario: scenario,\n    sequence: sequence,\n    emailProspect: $json.property_e_mail,\n    civilite: $json.property_civilit,\n    prenom: $json.property_pr_nom,\n    nom: $json.property_nom,\n    urlTemplate: templateURL,\n    fileName: fileName,\n    trackingUrl: trackingUrl\n  }\n};\n"
       },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        1100,
-        -220
+        520,
+        -480
       ],
-      "id": "a077a1f3-b830-4ebf-a78e-3e8ff78cce3e",
-      "name": "Switch"
+      "id": "38ba9834-25e1-4507-a605-6c4363d2e54f",
+      "name": "DataSet"
     },
     {
       "parameters": {
-        "fromEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
-        "toEmail": "={{ $('Split Out').item.json.property_e_mail }}",
-        "subject": "Un partenariat local gagnant-gagnant pour vos clients",
-        "emailFormat": "both",
-        "text": "=Bonjour {{ $('Split Out').item.json.property_civilit }} {{ $('Split Out').item.json.property_pr_nom }} {{ $('Split Out').item.json.property_nom }},\n\nJe me permets de vous contacter car je dirige DAGDA Consulting, une agence locale spécialisée dans la création de sites web et la gestion de campagnes publicitaires pour les TPE/PME de notre région.\n\nNous travaillons régulièrement avec des artisans, commerçants et professions libérales qui ont besoin d'une vraie présence en ligne pour développer leur activité. \n\nJe vous propose un partenariat simple : pour chaque client que vous nous recommandez, nous vous reversons 10 % du chiffre d'affaires généré la première année. De quoi offrir un service utile à vos clients tout en valorisant votre rôle de conseil.\n\nJe serais ravi d’échanger avec vous pour vous présenter le fonctionnement en détail, en toute simplicité.\n\nSeriez-vous disponible cette semaine pour un échange de 15 minutes par téléphone ou visio ?\n\nBien à vous,  \nGilles Hanotel  \nDAGDA Consulting  \n📞 01 86 04 01 30\n🌐 https://www.dagdaconsulting.fr\n ",
-        "html": "=Bonjour {{ $('Split Out').item.json.property_civilit }} {{ $('Split Out').item.json.property_pr_nom }} {{ $('Split Out').item.json.property_nom }},\n\nJe me permets de vous contacter car je dirige DAGDA Consulting, une agence locale spécialisée dans la création de sites web et la gestion de campagnes publicitaires pour les TPE/PME de notre région.\n\nNous travaillons régulièrement avec des artisans, commerçants et professions libérales qui ont besoin d'une vraie présence en ligne pour développer leur activité. \n\nJe vous propose un partenariat simple : pour chaque client que vous nous recommandez, nous vous reversons 10 % du chiffre d'affaires généré la première année. De quoi offrir un service utile à vos clients tout en valorisant votre rôle de conseil.\n\nJe serais ravi d’échanger avec vous pour vous présenter le fonctionnement en détail, en toute simplicité.\n\nSeriez-vous disponible cette semaine pour un échange de 15 minutes par téléphone ou visio ?\n\nBien à vous,  \nGilles Hanotel  \nDAGDA Consulting  \n📞 01 86 04 01 30\n🌐 https://www.dagdaconsulting.fr",
-        "options": {
-          "appendAttribution": false,
-          "replyTo": "gilles.hanotel@dagdaconsulting.fr"
-        }
+        "operation": "download",
+        "path": "={{ $json.urlTemplate }}"
       },
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.nextCloud",
+      "typeVersion": 1,
       "position": [
-        1980,
-        -320
+        740,
+        -480
       ],
-      "id": "30631a65-053a-47aa-819a-beffa5d6dd0e",
-      "name": "Send Email",
-      "webhookId": "6516cea2-d227-430b-868e-565a370e7f5f",
+      "id": "8fb79433-1a40-4925-b5b3-7d5370443006",
+      "name": "Download Template",
+      "alwaysOutputData": false,
+      "executeOnce": false,
       "credentials": {
-        "smtp": {
-          "id": "OCcMFTbzJ3Q4jkW3",
-          "name": "SMTP gilles.hanotel@dagdaconsulting.fr"
+        "nextCloudApi": {
+          "id": "IVa79bi5ZUmWlMFe",
+          "name": "NextCloud data.c-g-h.net"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
-        "fromEmail": "\"DAGDA Consulting\" <gilles.hanotel@dagdaconsulting.fr>",
-        "toEmail": "gilles.hanotel@gmail.com",
-        "subject": "Encore un prospect bidon...",
-        "html": "={{ $('Split Out').item.json.property_pr_nom }}\n{{ $('Split Out').item.json.property_nom }}\n\n{{ $('Split Out').item.json.property_societe }}",
-        "options": {
-          "appendAttribution": false
-        }
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Étant en “Run Once for Each Item”,\n// on a directement accès à la variable `item`,\n// qui combine désormais :\n//  • item.json.{id, nom, prenom, email, …}  (venant de “Get Prospects”)\n//  • item.binary.data.{fileName, directory, fileExtension, mimeType, fileSize, data} \n//    (venant du nœud Nextcloud).\n\n// 1) Récupérer l’objet binaire “data” (émanant de Nextcloud)\nconst bin           = item.binary.data;\n\n// 2) Dans cet objet binaire, la propriété `bin.data` contient la chaîne Base64 du .txt\nconst base64String  = bin.data;\n\n// 3) Décoder le Base64 en UTF-8 → on obtient le “texte brut” du template\nconst texteBrut     = Buffer.from(base64String, 'base64').toString('utf8');\n\n// 4) Faire une passe de remplacement pour chaque placeholder {clé}.\n//    Ex. : si le fichier contient “Bonjour {prenom} {nom},”, on veut remplacer {prenom} et {nom}.\n//    On utilise une RegExp globale /\\{(\\w+)\\}/g :\n//      • (\\w+) capture “une suite de lettres/chiffres/_” qui est le nom de la variable (ex “prenom”).\n//      • fullMatch = la totalité de la chaîne (“{prenom}”), varName = “prenom”.\nconst texteRemplace = texteBrut.replace(/\\{(\\w+)\\}/g, (fullMatch, varName) => {\n  // Si item.json[varName] existe, on remplace par cette valeur.\n  // Sinon on laisse fullMatch (c.-à-d. “{varName}”), pratique pour repérer un placeholder non défini.\n  return item.json[varName] !== undefined\n    ? item.json[varName]\n    : fullMatch;\n});\n\n// 5) En sortie, on renvoie UN SEUL objet { json: { … } }.\n//    On recopie toutes les clés JSON qui étaient présentes (id, nom, prenom, email, …).\n//    Puis on ajoute un nouveau champ `content` qui contient le texte final.\nreturn {\n  json: {\n    // Tout le JSON du prospect (par ex. { id:1, nom:\"Dupont\", prenom:\"Jean\", email:\"jean.dupont@example.com\" })\n    ...item.json,\n    // + on ajoute notre texte transformé\n    content: texteRemplace,\n  }\n};"
       },
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        1320,
-        -120
+        940,
+        -580
       ],
-      "id": "847d5cbe-ea9c-4dca-85e3-fbd580805a4d",
-      "name": "Send Email1",
-      "webhookId": "0accc8a0-46f5-46cd-a9c5-3e2bd2394f5b",
-      "credentials": {
-        "smtp": {
-          "id": "OCcMFTbzJ3Q4jkW3",
-          "name": "SMTP gilles.hanotel@dagdaconsulting.fr"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "d7d53240-1fed-42f3-bd1c-ed7dcacfe631",
-              "leftValue": "={{ $json.millis }}",
-              "rightValue": "={{ $now.toMillis() }}",
-              "operator": {
-                "type": "number",
-                "operation": "lte"
-              }
-            },
-            {
-              "id": "3461da4f-da10-4ee7-b0e5-4b54cc6bc03d",
-              "leftValue": "",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        880,
-        -220
-      ],
-      "id": "214910fe-a4e2-40aa-adb6-5491518a2e0e",
-      "name": "Check_date"
+      "id": "fe9bdca4-5bd3-4169-96f4-e8ab3b65c279",
+      "name": "Adapt Template"
     },
     {
       "parameters": {
@@ -231,18 +196,19 @@
         "operation": "update",
         "pageId": {
           "__rl": true,
-          "value": "={{ $('Switch').item.json.url }}",
-          "mode": "url"
+          "value": "={{ $json.id }}",
+          "mode": "id"
         },
         "propertiesUi": {
           "propertyValues": [
             {
-              "key": "Séquence|number",
-              "numberValue": 999
+              "key": "Next Date|date",
+              "includeTime": false,
+              "date": "={{ $json.nextdate }}"
             },
             {
-              "key": "Next Date|date",
-              "date": "2040-12-31T00:00:00"
+              "key": "Séquence|number",
+              "numberValue": "={{ $json.seq +1}}"
             }
           ]
         },
@@ -251,10 +217,10 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1540,
-        -120
+        1820,
+        -580
       ],
-      "id": "5cce395f-57b3-4688-bc76-38dae12916e5",
+      "id": "84de9fd1-9fb3-431d-9cad-5fa745ab0125",
       "name": "Notion",
       "credentials": {
         "notionApi": {
@@ -265,22 +231,48 @@
     },
     {
       "parameters": {
+        "path": "dagda_track-open",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -240
+      ],
+      "id": "9c667d38-583a-4e36-a40d-e5d741f58868",
+      "name": "dagda_track_open",
+      "webhookId": "e6898fc7-29f0-4a94-ab88-c9c13dea19b6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Récupérer notionId depuis la query string\n//    Webhook met les query params dans $json[\"query\"] (ou directement $json[\"query\"][\"notionId\"])\nconst queryParams = $json[\"query\"] || {};\nconst notionId = queryParams[\"Id\"];\n\n// 2) Récupérer la date/heure courante dans le fuseau Europe/Paris\n//    n8n exécute en UTC, on veut stocker en ISO (YYYY-MM-DDTHH:mm:ssZ)\nconst nowIso = new Date().toISOString();\n\n// 3) Préparer le payload pour Notion Update\nreturn [{\n  json: {\n    notionPageId: notionId,\n    dateOuverture: nowIso\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -240
+      ],
+      "id": "172ec0b5-2386-4a4a-999e-2777bd9254dc",
+      "name": "ParseQuery"
+    },
+    {
+      "parameters": {
         "resource": "databasePage",
         "operation": "update",
         "pageId": {
           "__rl": true,
-          "value": "={{ $('Split Out').item.json.url }}",
-          "mode": "url"
+          "value": "={{ $json.notionPageId }}",
+          "mode": "id"
         },
         "propertiesUi": {
           "propertyValues": [
             {
-              "key": "Séquence|number",
-              "numberValue": "={{ $('Split Out').item.json.property_s_quence +1 }}"
-            },
-            {
-              "key": "Next Date|date",
-              "date": "={{ $json.notionDate }}"
+              "key": "Ouverture|date",
+              "date": "={{ $json.dateOuverture }}",
+              "timezone": "Europe/Paris"
             }
           ]
         },
@@ -289,11 +281,11 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2420,
-        -320
+        300,
+        -240
       ],
-      "id": "3bd4b317-541f-4cdd-85e3-48e8a8899a90",
-      "name": "Notion1",
+      "id": "776baba6-bf7a-41ac-9945-55782c5ae766",
+      "name": "UpdateOpeningDate",
       "credentials": {
         "notionApi": {
           "id": "f291e1a9rwjBTHf6",
@@ -303,82 +295,68 @@
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const dateStr = $json.property_next_date.start;\nlet millis = 0;\nif (dateStr) {\n  millis = DateTime.fromISO(dateStr).toMillis();\n}\nreturn { json: { millis } };"
+        "jsCode": "// Base64 d'un PNG transparent 1×1\nconst base64Pixel = \"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==\";\n// On convertit en buffer binaire\nconst buffer = Buffer.from(base64Pixel, \"base64\");\n\n// On doit renvoyer sous la forme d'un fichier binaire pour le Respond node\nreturn [\n  {\n    binary: {\n      data: {\n        data: buffer,\n        mimeType: \"image/png\",\n        fileName: \"pixel.png\"\n      }\n    }\n  }\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        660,
-        -220
+        520,
+        -240
       ],
-      "id": "d4609d3c-fe6b-4ca0-b01d-cbf8550b1014",
-      "name": "Convert Notion date"
+      "id": "b1e6b3ee-63cf-4fb8-9f51-4f6b8075842c",
+      "name": "GeneratePixel"
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "let date = new Date(); \nlet daysToAdd = 3;\nlet added = 0;\n\nwhile (added < daysToAdd) {\n  date.setDate(date.getDate() + 1);\n  // 0 = dimanche, 6 = samedi\n  if (date.getDay() !== 0 && date.getDay() !== 6) {\n    added++;\n  }\n}\n\n// Format ISO pour Notion (exemple : 2025-05-29T00:00:00.000Z)\nconst notionDate = date.toISOString();\n\nreturn { notionDate };\n"
+        "respondWith": "binary",
+        "responseDataSource": "set",
+        "options": {}
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
       "position": [
-        2200,
-        -320
+        740,
+        -240
       ],
-      "id": "64903bb0-6ad3-4b76-887c-df075d5f669c",
-      "name": "Add 3 days from now"
-    },
-    {
-      "parameters": {
-        "jsCode": "// On récupère le contenu du fichier téléchargé depuis Nextcloud (binaire base64)\nlet template = Buffer.from($binary.data, 'base64').toString('utf-8');\n\n// Vérification\nif (!template) {\n  throw new Error('Le contenu du template est vide ou mal référencé.');\n}\n\n// Variables à remplacer\nconst variables = {\n  Prenom: $('Split Out').first().json.property_pr_nom || '',\n  Nom: $('Split Out').first().json.property_nom || ''\n};\n\n// Remplacement des variables dans le template\nfor (const [key, value] of Object.entries(variables)) {\n  const regex = new RegExp(`{{${key}}}`, 'g');\n  template = template.replace(regex, value);\n}\n\nreturn { html: template };"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1760,
-        -320
-      ],
-      "id": "fe9bdca4-5bd3-4169-96f4-e8ab3b65c279",
-      "name": "Code"
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const binary = $binary.data;\nconst buffer = Buffer.from(binary.data, 'base64');\nconst contenuTexte = buffer.toString('utf-8');\n\nreturn [{\n  json: {\n    templateTexte: contenuTexte\n  }\n}];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1540,
-        -320
-      ],
-      "id": "d958d926-7422-4059-b214-f7176f71eb6e",
-      "name": "Code1"
-    },
-    {
-      "parameters": {
-        "operation": "download",
-        "path": "=/WebSites/Dagda%20Consulting/Prospection/Templates{{ $('Split Out').item.json.property_sc_nario }}_{{ $('Split Out').item.json.property_s_quence }}.txt"
-      },
-      "type": "n8n-nodes-base.nextCloud",
-      "typeVersion": 1,
-      "position": [
-        1320,
-        -320
-      ],
-      "id": "8fb79433-1a40-4925-b5b3-7d5370443006",
-      "name": "Nextcloud",
-      "credentials": {
-        "nextCloudApi": {
-          "id": "IVa79bi5ZUmWlMFe",
-          "name": "NextCloud data.c-g-h.net"
-        }
-      }
+      "id": "e52a9129-4b47-4530-9bc5-215126a425d2",
+      "name": "Respond to Webhook"
     }
   ],
   "connections": {
-    "When clicking ‘Test workflow’": {
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Add 3 days from now",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add 3 days from now": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
       "main": [
         [
           {
@@ -393,124 +371,95 @@
       "main": [
         [
           {
-            "node": "Split Out",
+            "node": "Split Out1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Split Out": {
+    "Split Out1": {
       "main": [
         [
           {
-            "node": "Convert Notion date",
+            "node": "DataSet",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Switch": {
+    "DataSet": {
       "main": [
         [
           {
-            "node": "Nextcloud",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Send Email1",
+            "node": "Download Template",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Send Email": {
+    "Download Template": {
       "main": [
         [
           {
-            "node": "Add 3 days from now",
+            "node": "Adapt Template",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Check_date": {
+    "Adapt Template": {
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Markdown",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Send Email1": {
+    "dagda_track_open": {
       "main": [
         [
           {
-            "node": "Notion",
+            "node": "ParseQuery",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Convert Notion date": {
+    "ParseQuery": {
       "main": [
         [
           {
-            "node": "Check_date",
+            "node": "UpdateOpeningDate",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Add 3 days from now": {
+    "UpdateOpeningDate": {
       "main": [
         [
           {
-            "node": "Notion1",
+            "node": "GeneratePixel",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code": {
+    "GeneratePixel": {
       "main": [
         [
           {
-            "node": "Send Email",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code1": {
-      "main": [
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Nextcloud": {
-      "main": [
-        [
-          {
-            "node": "Code1",
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -521,13 +470,17 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "388025de-ed95-41e0-a9a6-e3d5b9b19819",
-  "triggerCount": 0,
+  "versionId": "ffd726ee-58d4-48d0-9105-6604d0dc8169",
+  "triggerCount": 2,
   "tags": [
     {
       "createdAt": "2025-05-23T10:32:19.651Z",
