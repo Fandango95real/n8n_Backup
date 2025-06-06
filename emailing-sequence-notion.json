@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-05-23T10:05:28.892Z",
-  "updatedAt": "2025-06-04T23:00:23.000Z",
+  "updatedAt": "2025-06-05T13:49:29.000Z",
   "id": "qqPofSEKswPVvYfv",
   "name": "Emailing sequence",
   "active": true,
@@ -468,7 +468,9 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -479,7 +481,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ffd726ee-58d4-48d0-9105-6604d0dc8169",
+  "versionId": "33131006-60a6-4401-a606-f117279baeba",
   "triggerCount": 2,
   "tags": [
     {
