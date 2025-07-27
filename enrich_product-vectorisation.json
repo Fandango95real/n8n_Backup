@@ -1,0 +1,474 @@
+{
+  "createdAt": "2025-07-26T21:17:19.072Z",
+  "updatedAt": "2025-07-26T21:27:45.000Z",
+  "id": "RUVJu5wV5RVt1Izn",
+  "name": "Enrich_Product",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "e102c64f-becf-4d67-8dbc-0c282404fb35",
+        "formTitle": "Description Produit",
+        "formDescription": "Enrichissement fiche produit",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "product_id",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "context"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0479c13b-2ad0-4811-b046-0871e293ff94",
+      "name": "Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2256,
+        128
+      ],
+      "webhookId": "e102c64f-becf-4d67-8dbc-0c282404fb35"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.PRESTASHOP_API_URL }}/products/{{$json[\"product_id\"]}}?display=full",
+        "options": {}
+      },
+      "id": "05bc41a2-7fbc-4f04-916b-5033ced0b416",
+      "name": "Get Product",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -1792,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.PRESTASHOP_API_URL }}/categories/{{ $json.product.product.default_category }}?display=full",
+        "options": {}
+      },
+      "id": "72cc70bc-8605-4fa4-98db-2b11e3157d2b",
+      "name": "Get Main Category",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -1536,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Default category name\nconst catName = items[0].json.category.category[0].name[0].value;\nitems[0].json.main_category = catName;\n\n// Specs = feature name + value tel quel\na const specs = {};\nfor (const f of items[0].json.product.product.associations.product_features?.feature || []) {\n  specs[f.name[0].value] = f.value[0].value;\n}\nitems[0].json.specs = specs;\n\nreturn items;"
+      },
+      "id": "ea4d22df-ec16-4205-8cd5-5c65c56947ab",
+      "name": "Build Specs & Vars",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "324aa7ef-e863-4f04-ba5c-24bbe1289c81",
+      "name": "UPSERT products",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "06bdad7b-e0e8-45b4-8b52-493e190aeec0",
+      "name": "GPT-4o Generate",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 3,
+      "position": [
+        -816,
+        368
+      ],
+      "credentials": {
+        "openaiApi": {
+          "id": null,
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "da179e52-e624-4e07-af30-243937a67d60",
+      "name": "Embedding",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 3,
+      "position": [
+        -752,
+        128
+      ],
+      "credentials": {
+        "openaiApi": {
+          "id": null,
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "2633c6f3-d4ab-4e32-940d-6ce8af494afb",
+      "name": "Similarity Query",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json[\"rows\"][0].cos || 0 }}",
+              "operation": "largerEqual",
+              "value2": 0.92
+            }
+          ]
+        }
+      },
+      "id": "b045169a-19df-4465-aae4-a6c560d70315",
+      "name": "IF > 0.92",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "Fiche produit {{ $json.product_id }} – à valider",
+        "text": "Description générée. Cliquer pour approuver : {{ $env.N8N_HOST }}/webhook/validate?id={{$json.product_id}}&v=1&decision=approve\nRejeter : {{ $env.N8N_HOST }}/webhook/validate?id={{$json.product_id}}&v=1&decision=reject",
+        "options": {}
+      },
+      "id": "4ff97ac3-7564-4892-b4ab-2ffe99681bd5",
+      "name": "Send for Approval",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "smtp": {
+          "id": null,
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "validate",
+        "options": {}
+      },
+      "id": "48c62c25-e381-46dc-814c-34bd45929597",
+      "name": "Webhook /validate",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        256,
+        0
+      ],
+      "webhookId": "a0fa5c91-0f2b-4478-ae8a-d15e7c55e8b4"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.PRESTASHOP_API_URL }}/products/{{$json[\"id\"]}}",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "dc89920d-eae1-4a93-8ac4-190d8cb7baf0",
+      "name": "PUT Prestashop",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        512,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "1b64570a-4787-4a4d-aa1f-90f477e4c8c2",
+      "name": "Insert Description",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        752,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "af10fc83-883a-4199-93a0-af9bd7327ac4",
+      "name": "Insert Embedding",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "hq4AmyoLlx7ejEsR",
+          "name": "poemana_seo_sql_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b51b6118-d767-4233-83b7-23ee60f1f419",
+              "name": "PRESTASHOP_API_URL",
+              "value": "https://dev.poemana.com/api",
+              "type": "string"
+            },
+            {
+              "id": "448e348e-e943-4757-b94b-c251d86b79a4",
+              "name": "APPROVAL_EMAIL",
+              "value": "fandango95@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "94d93f31-e6bb-4195-9a66-aade2b90bdd5",
+              "name": "N8N_HOST",
+              "value": "n8n.dagdaconsulting.fr",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2048,
+        128
+      ],
+      "id": "bce9089d-39be-459f-b654-792efc369555",
+      "name": "Set_ENV"
+    }
+  ],
+  "connections": {
+    "Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set_ENV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Product": {
+      "main": [
+        [
+          {
+            "node": "Get Main Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Main Category": {
+      "main": [
+        [
+          {
+            "node": "Build Specs & Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Specs & Vars": {
+      "main": [
+        [
+          {
+            "node": "UPSERT products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Similarity Query": {
+      "main": [
+        [
+          {
+            "node": "IF > 0.92",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF > 0.92": {
+      "main": [
+        [
+          {
+            "node": "Send for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook /validate": {
+      "main": [
+        [
+          {
+            "node": "PUT Prestashop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Prestashop": {
+      "main": [
+        [
+          {
+            "node": "Insert Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Description": {
+      "main": [
+        [
+          {
+            "node": "Insert Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_ENV": {
+      "main": [
+        [
+          {
+            "node": "Get Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f7864c9b-441d-4bd3-8135-b06384e2a153",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-21T21:46:48.064Z",
+      "updatedAt": "2025-05-21T22:47:24.039Z",
+      "id": "YIhJ2Y2JxVY694dc",
+      "name": "vectorisation"
+    },
+    {
+      "createdAt": "2025-05-21T22:47:46.565Z",
+      "updatedAt": "2025-05-21T22:47:46.565Z",
+      "id": "awZ2gIri7ry57Uqs",
+      "name": "postgresql"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
