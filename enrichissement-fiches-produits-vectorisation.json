@@ -1,0 +1,140 @@
+{
+  "createdAt": "2025-07-27T13:56:33.266Z",
+  "updatedAt": "2025-07-27T14:20:07.000Z",
+  "id": "6bvaqLrxR5PUOGJY",
+  "name": "Enrichissement Fiches Produits",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "generate_product_description",
+        "formDescription": "generate_product_description",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "product_id",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "context",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "278c6bed-c69b-4d5c-978c-b60e5066106e",
+      "name": "On form submission",
+      "webhookId": "7f85f288-e546-45cf-9b11-8b88200b095e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37b81305-5851-4938-abe6-b0238e400066",
+              "name": "PS_URL",
+              "value": "https://dev.poemana.com/api",
+              "type": "string"
+            },
+            {
+              "id": "55681f98-5104-4804-8d8d-fb4b84884d9e",
+              "name": "APPROVAL_EMAIL",
+              "value": "fandango95@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "cc1ff900-e234-442c-a4d0-463c7d445bb7",
+              "name": "N8N_HOST",
+              "value": "https://n8n.dagdaconsulting.fr",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "32e0104f-3c87-4993-ae5d-da079bbd6371",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "product_id": 1251,
+          "context": "boucles d'oreilles discrètes de base",
+          "submittedAt": "2025-07-27T10:13:21.387-04:00",
+          "formMode": "test"
+        }
+      }
+    ],
+    "Edit Fields": [
+      {
+        "json": {
+          "product_id": 1251,
+          "context": "boucles d'oreilles discrètes de base",
+          "submittedAt": "2025-07-27T10:13:21.387-04:00",
+          "formMode": "test",
+          "PS_URL": "https://dev.poemana.com/api",
+          "APPROVAL_EMAIL": "fandango95@gmail.com",
+          "N8N_HOST": "https://n8n.dagdaconsulting.fr"
+        }
+      }
+    ]
+  },
+  "versionId": "258296d6-7844-4e85-bda0-0265d8794e9f",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-05-21T21:46:48.064Z",
+      "updatedAt": "2025-05-21T22:47:24.039Z",
+      "id": "YIhJ2Y2JxVY694dc",
+      "name": "vectorisation"
+    },
+    {
+      "createdAt": "2025-05-21T22:47:46.565Z",
+      "updatedAt": "2025-05-21T22:47:46.565Z",
+      "id": "awZ2gIri7ry57Uqs",
+      "name": "postgresql"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
