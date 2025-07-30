@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-27T13:56:33.266Z",
-  "updatedAt": "2025-07-28T12:26:40.000Z",
+  "updatedAt": "2025-07-29T07:56:44.000Z",
   "id": "6bvaqLrxR5PUOGJY",
   "name": "Enrichissement Fiches Produits",
   "active": false,
@@ -29,7 +29,7 @@
       "typeVersion": 2.2,
       "position": [
         -128,
-        160
+        256
       ],
       "id": "278c6bed-c69b-4d5c-978c-b60e5066106e",
       "name": "On form submission",
@@ -43,7 +43,7 @@
       "typeVersion": 1,
       "position": [
         544,
-        160
+        256
       ],
       "id": "d2ea1527-583a-4617-addd-a606361d5f5f",
       "name": "XML"
@@ -59,7 +59,7 @@
       "typeVersion": 4.2,
       "position": [
         320,
-        160
+        256
       ],
       "id": "25138c9b-2ad9-4805-a110-0d4a2edb3cfa",
       "name": "Get Prestashop Product",
@@ -101,7 +101,7 @@
       "typeVersion": 3.4,
       "position": [
         96,
-        160
+        256
       ],
       "id": "32e0104f-3c87-4993-ae5d-da079bbd6371",
       "name": "Env Settings"
@@ -117,7 +117,7 @@
       "typeVersion": 4.2,
       "position": [
         768,
-        160
+        256
       ],
       "id": "7a283305-564a-424c-8c44-6e621efef98d",
       "name": "Get Default Category Details",
@@ -136,7 +136,7 @@
       "typeVersion": 1,
       "position": [
         992,
-        160
+        256
       ],
       "id": "b6923b6b-2470-4360-af68-bd8bbafb8976",
       "name": "XML1"
@@ -148,24 +148,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1456,
-        352
+        1440,
+        256
       ],
       "id": "c753fdc8-f711-4cdf-83ef-0cc0fc4cc6f3",
       "name": "Get_Features_ID"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        1680,
-        352
-      ],
-      "id": "ef22b6e0-c6b0-416b-9bb6-01d1cae12411",
-      "name": "Loop Over Items"
     },
     {
       "parameters": {
@@ -177,7 +164,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1904,
+        1888,
         160
       ],
       "id": "b69a978d-f19a-4948-a933-9353c8c78228",
@@ -196,7 +183,7 @@
       "type": "n8n-nodes-base.xml",
       "typeVersion": 1,
       "position": [
-        2128,
+        2112,
         160
       ],
       "id": "58f13e59-dc49-4224-ba89-0c7fc6672862",
@@ -212,7 +199,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1904,
+        1888,
         352
       ],
       "id": "90260fe0-9881-42f3-b651-a297fac702d1",
@@ -231,7 +218,7 @@
       "type": "n8n-nodes-base.xml",
       "typeVersion": 1,
       "position": [
-        2128,
+        2112,
         352
       ],
       "id": "7d361364-0ab5-4c0b-8ff9-0deaad9cecc1",
@@ -255,7 +242,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2352,
+        2336,
         352
       ],
       "id": "60ccd976-da85-4728-9081-4ede9354dad6",
@@ -279,19 +266,23 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2352,
+        2336,
         160
       ],
       "id": "701cffdd-673e-417d-b31a-40a5564bafc5",
       "name": "Set Feature Name"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2576,
-        352
+        2560,
+        256
       ],
       "id": "823a7ed4-7785-4138-bf1f-9f5fb27a525e",
       "name": "Merge"
@@ -358,8 +349,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1200,
-        160
+        1216,
+        256
       ],
       "id": "98b24ad6-7153-463f-995c-e6763ec010a2",
       "name": "Update DB",
@@ -369,6 +360,21 @@
           "name": "poemana_seo_sql_rw"
         }
       }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "featureId",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        256
+      ],
+      "id": "428834ec-1d7b-4161-ad0d-6c25292abb24",
+      "name": "Split Out"
     }
   ],
   "connections": {
@@ -442,24 +448,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Get Feature Name",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get Feature Value",
+            "node": "Split Out",
             "type": "main",
             "index": 0
           }
@@ -534,13 +523,7 @@
     },
     "Merge": {
       "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Update DB": {
@@ -548,6 +531,22 @@
         [
           {
             "node": "Get_Features_ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get Feature Name",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Feature Value",
             "type": "main",
             "index": 0
           }
@@ -937,7 +936,7 @@
       }
     ]
   },
-  "versionId": "df50fc8a-edd2-4433-80d8-fca688147db6",
+  "versionId": "c98140e8-efd1-432a-b225-3864d8c22243",
   "triggerCount": 0,
   "tags": [
     {
