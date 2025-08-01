@@ -1,0 +1,1028 @@
+{
+  "createdAt": "2025-07-27T13:56:33.266Z",
+  "updatedAt": "2025-07-31T13:31:09.000Z",
+  "id": "6bvaqLrxR5PUOGJY",
+  "name": "Enrichissement Fiches Produits",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "generate_product_description",
+        "formDescription": "generate_product_description",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "product_id",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "context",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        304
+      ],
+      "id": "278c6bed-c69b-4d5c-978c-b60e5066106e",
+      "name": "On form submission",
+      "webhookId": "7f85f288-e546-45cf-9b11-8b88200b095e"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        544,
+        304
+      ],
+      "id": "d2ea1527-583a-4617-addd-a606361d5f5f",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.PS_URL }}/products/{{$json.product_id}}?display=full",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        304
+      ],
+      "id": "25138c9b-2ad9-4805-a110-0d4a2edb3cfa",
+      "name": "Get Prestashop Product",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37b81305-5851-4938-abe6-b0238e400066",
+              "name": "PS_URL",
+              "value": "https://dev.poemana.com/api",
+              "type": "string"
+            },
+            {
+              "id": "55681f98-5104-4804-8d8d-fb4b84884d9e",
+              "name": "APPROVAL_EMAIL",
+              "value": "fandango95@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "cc1ff900-e234-442c-a4d0-463c7d445bb7",
+              "name": "N8N_HOST",
+              "value": "https://n8n.dagdaconsulting.fr",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        304
+      ],
+      "id": "32e0104f-3c87-4993-ae5d-da079bbd6371",
+      "name": "Env Settings"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Env Settings').item.json.PS_URL }}/categories/{{ $json.prestashop.product.id_category_default._ }}?display=full",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        304
+      ],
+      "id": "7a283305-564a-424c-8c44-6e621efef98d",
+      "name": "Get Default Category Details",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        992,
+        304
+      ],
+      "id": "b6923b6b-2470-4360-af68-bd8bbafb8976",
+      "name": "XML1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récupère l'array de product_feature sous associations.product_features\nconst assoc = $('XML').first().json.prestashop.product.associations.product_features;\nlet features = [];\n\n// Si on trouve bien product_feature, on force en tableau\nif (assoc && assoc.product_feature) {\n  features = Array.isArray(assoc.product_feature)\n    ? assoc.product_feature\n    : [assoc.product_feature];\n}\n\n// Map sur chaque feature pour en extraire les IDs et HREFs\nreturn features.map(f => ({\n  json: {\n    product_id: $('XML').first().json.prestashop.product.id,\n    featureId:   f.id,                               // ex \"19\"\n    featureHref: f['xlink:href'],                    // URL de l'API\n    valueId:     f.id_feature_value._,               // ex \"79\"\n    valueHref:   f.id_feature_value['xlink:href']    // URL de l'API\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        304
+      ],
+      "id": "c753fdc8-f711-4cdf-83ef-0cc0fc4cc6f3",
+      "name": "Get_Features_ID"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.featureHref }}?display=full&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1664,
+        208
+      ],
+      "id": "b69a978d-f19a-4948-a933-9353c8c78228",
+      "name": "Get Feature Name",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        208
+      ],
+      "id": "58f13e59-dc49-4224-ba89-0c7fc6672862",
+      "name": "XML2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get_Features_ID').item.json.valueHref }}?display=full&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1664,
+        400
+      ],
+      "id": "90260fe0-9881-42f3-b651-a297fac702d1",
+      "name": "Get Feature Value",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        400
+      ],
+      "id": "7d361364-0ab5-4c0b-8ff9-0deaad9cecc1",
+      "name": "XML3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aa526c6c-9c5d-45b9-95a0-1c76c8b91dcb",
+              "name": "featureValue",
+              "value": "={{ $json.prestashop.product_feature_value.value.language._ }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2112,
+        400
+      ],
+      "id": "60ccd976-da85-4728-9081-4ede9354dad6",
+      "name": "Set Feature Value"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a3ebffe-f80d-49c8-95e5-0d75826186b2",
+              "name": "=featureName",
+              "value": "={{ $json.prestashop.product_feature.name.language._ }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2112,
+        208
+      ],
+      "id": "701cffdd-673e-417d-b31a-40a5564bafc5",
+      "name": "Set Feature Name"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2336,
+        304
+      ],
+      "id": "823a7ed4-7785-4138-bf1f-9f5fb27a525e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "featureId",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        304
+      ],
+      "id": "428834ec-1d7b-4161-ad0d-6c25292abb24",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1eWehQjqVhg-BVSWBniR2tE43JTL0Afdx_WeJ_wr2_CY",
+          "mode": "list",
+          "cachedResultName": "Bijoux",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eWehQjqVhg-BVSWBniR2tE43JTL0Afdx_WeJ_wr2_CY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Feuille 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eWehQjqVhg-BVSWBniR2tE43JTL0Afdx_WeJ_wr2_CY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product_ID": "={{$node[\"XML\"].json.prestashop.product.id}}",
+            "Prompt": "=Tu es un rédacteur SEO confirmé et spécialisé dans le domaine des bijoux de luxe.\nTon objectif est de générer des textes à la fois engageants et intéressants pour le lecteur et intégrant toutes les bonnes pratiques du SEO pour améliorer le référencement.\n\n### CONTEXTE\nCes textes seront utilisés sur les fiches produits du site poemana.com et à destination d'une clientèle mixte CSP+ de 35 à 55 ans intéressée par les bijoux avec perles de culture.\nLa marque POEMANA dispose de son propre atelier situé dans les Yvelines et tous les bijoux y sont assemblés manuellement avec passion et professionalisme.\nLe positionnement de la marque est le luxe mais avec des prix abordables au vu des produits (or 18k, argent, perles de culture de Tahiti AAA, etc...)\n\n### FICHE PRODUIT\nVoici les informations principales actuelles de la fiche produit :\n\nNom du bijou : {{ $node[\"XML\"].json.prestashop.product.name.language[0]._ }}\nCatégorie principale : {{ $node[\"XML1\"].json.prestashop.category.name.language[0]._ }}\nCaractéristiques principales : {{ $json.specsString }}\nDescription courte : {{ $node[\"XML\"].json.prestashop.product.description_short.language[0]._ }}\nDescription longue : {{ $node[\"XML\"].json.prestashop.product.description.language[0]._ }}\nMeta title : {{ $node[\"XML\"].json.prestashop.product.meta_title.language[0]._ }}\nMeta description : {{ $node[\"XML\"].json.prestashop.product.meta_description.language[0]._ }}\n\n### GENERE\n- un texte d'accroche incluant les points essentiels pour l'acheteur (HTML, 300 à 600 caractères balises incluses), objectif : créer l’émotion sans romancer tout en présentant le bijou.\n- une description longue reprenant tous les détails ou une anecdote véridique et vérifiable sur ce type de bijou (HTML, 1000 caractères max balises incluses), l'occasion d'apprendre des choses au lecteur et d'ajouter les mots clefs de longue traîne pour le SEO\n- FAQ 3 à 5 Q/R – HTML,\n- meta_title (≤70 car.), meta_desc (≤160 car.)\n\n### CONTRAINTES\n- Tutoiement proscrit ; vouvoiement exclusif\n- jamais de superlatifs creux (« magnifique », « sublime ») ou alors argumenter\n- champ lexical du luxe : haut de gamme mais sans arrogance\n- Valoriser l’artisanat français & l’authenticité des perles mais pas plus d'une fois par fiche",
+            "Product_Name": "={{ $node[\"XML\"].json.prestashop.product.name.language[0]._ }}",
+            "Description_Short": "={{ $node[\"XML\"].json.prestashop.product.description_short.language[0]._ }}",
+            "Description_Long": "={{ $node[\"XML\"].json.prestashop.product.description.language[0]._ }}",
+            "Meta_title": "={{ $node[\"XML\"].json.prestashop.product.meta_title.language[0]._ }}",
+            "Meta_Description": "={{ $node[\"XML\"].json.prestashop.product.meta_description.language[0]._ }}",
+            "Categorie": "={{ $node[\"XML1\"].json.prestashop.category.name.language[0]._ }}"
+          },
+          "matchingColumns": [
+            "Product_ID"
+          ],
+          "schema": [
+            {
+              "id": "Product_ID",
+              "displayName": "Product_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product_Name",
+              "displayName": "Product_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Categorie",
+              "displayName": "Categorie",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Prompt",
+              "displayName": "Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description_Short",
+              "displayName": "Description_Short",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description_Long",
+              "displayName": "Description_Long",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meta_title",
+              "displayName": "Meta_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meta_Description",
+              "displayName": "Meta_Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2784,
+        304
+      ],
+      "id": "a1164eb1-1f51-4018-b4ef-919f0ef562ff",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fZJ7VkRlV9NR56ws",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récupère tous les items en entrée\nconst items = $input.all();\n\n// Construit la chaîne \"featureName : featureValue ; featureName : featureValue …\"\nconst specsString = items\n  .map(item => `${item.json.featureName} : ${item.json.featureValue}`)\n  .join(' ; ');\n\n// Retourne un seul item avec la propriété specsString\nreturn [\n  {\n    json: { specsString }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        304
+      ],
+      "id": "e2016d54-7b74-469c-8e39-6627c56b17fc",
+      "name": "Build Specs String"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Env Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prestashop Product": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Env Settings": {
+      "main": [
+        [
+          {
+            "node": "Get Prestashop Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Get Default Category Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Default Category Details": {
+      "main": [
+        [
+          {
+            "node": "XML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML1": {
+      "main": [
+        [
+          {
+            "node": "Get_Features_ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Features_ID": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Feature Name": {
+      "main": [
+        [
+          {
+            "node": "XML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML2": {
+      "main": [
+        [
+          {
+            "node": "Set Feature Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Feature Value": {
+      "main": [
+        [
+          {
+            "node": "XML3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML3": {
+      "main": [
+        [
+          {
+            "node": "Set Feature Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Feature Value": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Feature Name": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Build Specs String",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get Feature Name",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Feature Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Specs String": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "product_id": 1251,
+          "context": "boucles d'oreilles discrètes de base",
+          "submittedAt": "2025-07-27T10:13:21.387-04:00",
+          "formMode": "test"
+        }
+      }
+    ],
+    "XML": [
+      {
+        "json": {
+          "prestashop": {
+            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+            "product": {
+              "id": "1251",
+              "id_manufacturer": {
+                "_": "3",
+                "xlink:href": "https://dev.poemana.com/api/manufacturers/3"
+              },
+              "id_supplier": "0",
+              "id_category_default": {
+                "_": "207",
+                "xlink:href": "https://dev.poemana.com/api/categories/207"
+              },
+              "new": "",
+              "cache_default_attribute": "0",
+              "id_default_image": {
+                "_": "8508",
+                "xlink:href": "https://dev.poemana.com/api/images/products/1251/8508",
+                "notFilterable": "true"
+              },
+              "id_default_combination": {
+                "_": "0",
+                "notFilterable": "true"
+              },
+              "id_tax_rules_group": {
+                "_": "88",
+                "xlink:href": "https://dev.poemana.com/api/tax_rule_groups/88"
+              },
+              "position_in_category": {
+                "_": "267",
+                "notFilterable": "true"
+              },
+              "manufacturer_name": {
+                "_": "Poemana",
+                "notFilterable": "true"
+              },
+              "quantity": {
+                "_": "0",
+                "notFilterable": "true"
+              },
+              "type": {
+                "_": "simple",
+                "notFilterable": "true"
+              },
+              "id_shop_default": "1",
+              "reference": "BO or zircons",
+              "supplier_reference": "",
+              "location": "",
+              "width": "0.000000",
+              "height": "0.000000",
+              "depth": "0.000000",
+              "weight": "0.000000",
+              "quantity_discount": "0",
+              "ean13": "",
+              "isbn": "",
+              "upc": "",
+              "mpn": "BO or zircons",
+              "cache_is_pack": "0",
+              "cache_has_attachments": "0",
+              "is_virtual": "0",
+              "state": "1",
+              "additional_delivery_times": "1",
+              "delivery_in_stock": {
+                "language": [
+                  {
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "delivery_out_stock": {
+                "language": [
+                  {
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "product_type": "standard",
+              "on_sale": "0",
+              "online_only": "0",
+              "ecotax": "0.000000",
+              "minimal_quantity": "1",
+              "low_stock_threshold": "",
+              "low_stock_alert": "0",
+              "price": "90.000000",
+              "wholesale_price": "0.000000",
+              "unity": "",
+              "unit_price": "0.000000",
+              "unit_price_ratio": "0.000000",
+              "additional_shipping_cost": "0.000000",
+              "customizable": "0",
+              "text_fields": "0",
+              "uploadable_files": "0",
+              "active": "1",
+              "redirect_type": "default",
+              "id_type_redirected": "0",
+              "available_for_order": "1",
+              "available_date": "0000-00-00",
+              "show_condition": "0",
+              "condition": "new",
+              "show_price": "1",
+              "indexed": "1",
+              "visibility": "both",
+              "advanced_stock_management": "0",
+              "date_add": "2024-10-10 00:50:43",
+              "date_upd": "2025-02-16 23:30:50",
+              "pack_stock_type": "0",
+              "meta_description": {
+                "language": [
+                  {
+                    "_": "Boucles d'oreilles or 18k et zirconiums. A porter en toutes occasions! Un indispensable à mixer facilement avec d'autres bijoux .",
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "_": "18k gold and zirconium earrings. Wear them for any occasion! A must-have that mixes easily with other jewels.",
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "meta_keywords": {
+                "language": [
+                  {
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "meta_title": {
+                "language": [
+                  {
+                    "_": "Boucles d'oreilles or 18k et zircons",
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "_": "18k gold and zirconia earrings",
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "link_rewrite": {
+                "language": [
+                  {
+                    "_": "boucles-d-oreilles-en-or-jaune-18-carats-serties-d-oxydes-de-zirconium",
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "_": "boucles-d-oreilles-or-18k-et-zircons",
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "name": {
+                "language": [
+                  {
+                    "_": "Boucles d'oreilles en Or jaune 18 carats serties d'oxydes de zirconium",
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "_": "Boucles d'oreilles or 18k et zircons",
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "description": {
+                "language": [
+                  {
+                    "_": "<p>Saviez-vous que les boucles d'oreilles en or jaune 18 carats avec oxydes de zirconium ont joué un rôle surprenant dans l'histoire de la joaillerie française ? Au XIXe siècle, alors que les diamants étaient réservés à l'élite, un joaillier parisien visionnaire eut l'idée d'utiliser des oxydes de zirconium pour créer des boucles d'oreilles en or pour femme accessibles à une clientèle plus large.</p>\n<p>Ces bijoux, alliant la noblesse de l'or 18 carats à l'éclat des oxydes de zirconium, connurent un succès fulgurant. Les femmes de la bourgeoisie montante s'en paraient avec fierté, appréciant leur élégance comparable aux diamants, mais à un prix plus abordable.</p>\n<p>L'engouement fut tel que ces boucles d'oreilles en or pour femme devinrent rapidement un symbole de raffinement et de bon goût. Les joailliers rivalisaient d'ingéniosité pour créer des modèles toujours plus séduisants, jouant sur les formes et les motifs.</p>\n<p>Aujourd'hui encore, les boucles d'oreilles en or jaune 18 carats ornées d'oxydes de zirconium restent un choix prisé des femmes en quête d'élégance intemporelle. Elles incarnent parfaitement l'alliance entre tradition joaillière française et innovation, offrant un éclat comparable aux diamants tout en restant accessibles.</p>\n<p>Ainsi, lorsque vous portez des boucles d'oreilles en or pour femme serties d'oxydes de zirconium, vous perpétuez une tradition joaillière vieille de plus de deux siècles, tout en affichant un style résolument moderne et raffiné.</p>",
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "_": "<p>Poemana guarantees high quality jewelry with certified authentic cultured pearls and the Made in France label.</p>\n<p>Satisfied or your money back guaranteed.</p>",
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "description_short": {
+                "language": [
+                  {
+                    "_": "<p>Découvrez nos superbes <strong>boucles d'oreilles en or jaune 18 carats serties d'oxydes de zirconium</strong>.</p>\n<p>Ces clous d'oreilles de <strong>6 mm</strong>, ornés de <strong>petits brillants</strong> sertis à 4 griffes, sont à la fois élégants, discrets et polyvalents.</p>\n<p>Avec leur système de fermeture poussette et un poids d'or de 1,2 gramme, ces boucles d'oreilles sont un indispensable pour toutes les occasions.</p>\n<p>Certifiées véritables, elles peuvent être facilement assorties à d'autres bijoux pour un look encore plus raffiné.</p>",
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "_": "<p><strong>18k yellow gold earrings with zirconium oxydes.</strong></p>\n<p>These small brilliants earrings are set in 750 gold, to form 6 mm size ear studs.<br />Wear them on all occasions! An essential pair of earrings to easily mix with other jewelry.</p>\n<p>Gold and stones are certified .</p>\n<p>Gold weight :0.95 gr<br />Butterfly back</p>",
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "available_now": {
+                "language": [
+                  {
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "available_later": {
+                "language": [
+                  {
+                    "id": "1",
+                    "xlink:href": "https://dev.poemana.com/api/languages/1"
+                  },
+                  {
+                    "id": "2",
+                    "xlink:href": "https://dev.poemana.com/api/languages/2"
+                  }
+                ]
+              },
+              "associations": {
+                "categories": {
+                  "nodeType": "category",
+                  "api": "categories",
+                  "category": {
+                    "xlink:href": "https://dev.poemana.com/api/categories/207",
+                    "id": "207"
+                  }
+                },
+                "images": {
+                  "nodeType": "image",
+                  "api": "images",
+                  "image": {
+                    "xlink:href": "https://dev.poemana.com/api/images/products/1251/8508",
+                    "id": "8508"
+                  }
+                },
+                "combinations": {
+                  "nodeType": "combination",
+                  "api": "combinations"
+                },
+                "product_option_values": {
+                  "nodeType": "product_option_value",
+                  "api": "product_option_values"
+                },
+                "product_features": {
+                  "nodeType": "product_feature",
+                  "api": "product_features",
+                  "product_feature": [
+                    {
+                      "xlink:href": "https://dev.poemana.com/api/product_features/19",
+                      "id": "19",
+                      "id_feature_value": {
+                        "_": "79",
+                        "xlink:href": "https://dev.poemana.com/api/product_feature_values/79"
+                      }
+                    },
+                    {
+                      "xlink:href": "https://dev.poemana.com/api/product_features/21",
+                      "id": "21",
+                      "id_feature_value": {
+                        "_": "96",
+                        "xlink:href": "https://dev.poemana.com/api/product_feature_values/96"
+                      }
+                    }
+                  ]
+                },
+                "tags": {
+                  "nodeType": "tag",
+                  "api": "tags"
+                },
+                "stock_availables": {
+                  "nodeType": "stock_available",
+                  "api": "stock_availables",
+                  "stock_available": {
+                    "xlink:href": "https://dev.poemana.com/api/stock_availables/3126",
+                    "id": "3126",
+                    "id_product_attribute": "0"
+                  }
+                },
+                "attachments": {
+                  "nodeType": "attachment",
+                  "api": "attachments"
+                },
+                "accessories": {
+                  "nodeType": "product",
+                  "api": "products",
+                  "product": [
+                    {
+                      "id": {
+                        "_": "730",
+                        "xlink:href": "https://dev.poemana.com/api/products/730"
+                      }
+                    },
+                    {
+                      "id": {
+                        "_": "775",
+                        "xlink:href": "https://dev.poemana.com/api/products/775"
+                      }
+                    },
+                    {
+                      "id": {
+                        "_": "1028",
+                        "xlink:href": "https://dev.poemana.com/api/products/1028"
+                      }
+                    },
+                    {
+                      "id": {
+                        "_": "1073",
+                        "xlink:href": "https://dev.poemana.com/api/products/1073"
+                      }
+                    }
+                  ]
+                },
+                "product_bundle": {
+                  "nodeType": "product",
+                  "api": "products"
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "Get Prestashop Product": [
+      {
+        "json": {
+          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<prestashop xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<product>\n\t<id><![CDATA[1251]]></id>\n\t<id_manufacturer xlink:href=\"https://dev.poemana.com/api/manufacturers/3\"><![CDATA[3]]></id_manufacturer>\n\t<id_supplier><![CDATA[0]]></id_supplier>\n\t<id_category_default xlink:href=\"https://dev.poemana.com/api/categories/207\"><![CDATA[207]]></id_category_default>\n\t<new><![CDATA[]]></new>\n\t<cache_default_attribute><![CDATA[0]]></cache_default_attribute>\n\t<id_default_image xlink:href=\"https://dev.poemana.com/api/images/products/1251/8508\" notFilterable=\"true\"><![CDATA[8508]]></id_default_image>\n\t<id_default_combination notFilterable=\"true\"><![CDATA[0]]></id_default_combination>\n\t<id_tax_rules_group xlink:href=\"https://dev.poemana.com/api/tax_rule_groups/88\"><![CDATA[88]]></id_tax_rules_group>\n\t<position_in_category notFilterable=\"true\"><![CDATA[267]]></position_in_category>\n\t<manufacturer_name notFilterable=\"true\"><![CDATA[Poemana]]></manufacturer_name>\n\t<quantity notFilterable=\"true\"><![CDATA[0]]></quantity>\n\t<type notFilterable=\"true\"><![CDATA[simple]]></type>\n\t<id_shop_default><![CDATA[1]]></id_shop_default>\n\t<reference><![CDATA[BO or zircons]]></reference>\n\t<supplier_reference><![CDATA[]]></supplier_reference>\n\t<location><![CDATA[]]></location>\n\t<width><![CDATA[0.000000]]></width>\n\t<height><![CDATA[0.000000]]></height>\n\t<depth><![CDATA[0.000000]]></depth>\n\t<weight><![CDATA[0.000000]]></weight>\n\t<quantity_discount><![CDATA[0]]></quantity_discount>\n\t<ean13><![CDATA[]]></ean13>\n\t<isbn><![CDATA[]]></isbn>\n\t<upc><![CDATA[]]></upc>\n\t<mpn><![CDATA[BO or zircons]]></mpn>\n\t<cache_is_pack><![CDATA[0]]></cache_is_pack>\n\t<cache_has_attachments><![CDATA[0]]></cache_has_attachments>\n\t<is_virtual><![CDATA[0]]></is_virtual>\n\t<state><![CDATA[1]]></state>\n\t<additional_delivery_times><![CDATA[1]]></additional_delivery_times>\n\t<delivery_in_stock><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[]]></language></delivery_in_stock>\n\t<delivery_out_stock><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[]]></language></delivery_out_stock>\n\t<product_type><![CDATA[standard]]></product_type>\n\t<on_sale><![CDATA[0]]></on_sale>\n\t<online_only><![CDATA[0]]></online_only>\n\t<ecotax><![CDATA[0.000000]]></ecotax>\n\t<minimal_quantity><![CDATA[1]]></minimal_quantity>\n\t<low_stock_threshold><![CDATA[]]></low_stock_threshold>\n\t<low_stock_alert><![CDATA[0]]></low_stock_alert>\n\t<price><![CDATA[90.000000]]></price>\n\t<wholesale_price><![CDATA[0.000000]]></wholesale_price>\n\t<unity><![CDATA[]]></unity>\n\t<unit_price><![CDATA[0.000000]]></unit_price>\n\t<unit_price_ratio><![CDATA[0.000000]]></unit_price_ratio>\n\t<additional_shipping_cost><![CDATA[0.000000]]></additional_shipping_cost>\n\t<customizable><![CDATA[0]]></customizable>\n\t<text_fields><![CDATA[0]]></text_fields>\n\t<uploadable_files><![CDATA[0]]></uploadable_files>\n\t<active><![CDATA[1]]></active>\n\t<redirect_type><![CDATA[default]]></redirect_type>\n\t<id_type_redirected><![CDATA[0]]></id_type_redirected>\n\t<available_for_order><![CDATA[1]]></available_for_order>\n\t<available_date><![CDATA[0000-00-00]]></available_date>\n\t<show_condition><![CDATA[0]]></show_condition>\n\t<condition><![CDATA[new]]></condition>\n\t<show_price><![CDATA[1]]></show_price>\n\t<indexed><![CDATA[1]]></indexed>\n\t<visibility><![CDATA[both]]></visibility>\n\t<advanced_stock_management><![CDATA[0]]></advanced_stock_management>\n\t<date_add><![CDATA[2024-10-10 00:50:43]]></date_add>\n\t<date_upd><![CDATA[2025-02-16 23:30:50]]></date_upd>\n\t<pack_stock_type><![CDATA[0]]></pack_stock_type>\n\t<meta_description><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[Boucles d'oreilles or 18k et zirconiums. A porter en toutes occasions! Un indispensable à mixer facilement avec d'autres bijoux .]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[18k gold and zirconium earrings. Wear them for any occasion! A must-have that mixes easily with other jewels.]]></language></meta_description>\n\t<meta_keywords><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[]]></language></meta_keywords>\n\t<meta_title><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[Boucles d'oreilles or 18k et zircons]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[18k gold and zirconia earrings]]></language></meta_title>\n\t<link_rewrite><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[boucles-d-oreilles-en-or-jaune-18-carats-serties-d-oxydes-de-zirconium]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[boucles-d-oreilles-or-18k-et-zircons]]></language></link_rewrite>\n\t<name><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[Boucles d'oreilles en Or jaune 18 carats serties d'oxydes de zirconium]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[Boucles d'oreilles or 18k et zircons]]></language></name>\n\t<description><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[<p>Saviez-vous que les boucles d'oreilles en or jaune 18 carats avec oxydes de zirconium ont joué un rôle surprenant dans l'histoire de la joaillerie française ? Au XIXe siècle, alors que les diamants étaient réservés à l'élite, un joaillier parisien visionnaire eut l'idée d'utiliser des oxydes de zirconium pour créer des boucles d'oreilles en or pour femme accessibles à une clientèle plus large.</p>\n<p>Ces bijoux, alliant la noblesse de l'or 18 carats à l'éclat des oxydes de zirconium, connurent un succès fulgurant. Les femmes de la bourgeoisie montante s'en paraient avec fierté, appréciant leur élégance comparable aux diamants, mais à un prix plus abordable.</p>\n<p>L'engouement fut tel que ces boucles d'oreilles en or pour femme devinrent rapidement un symbole de raffinement et de bon goût. Les joailliers rivalisaient d'ingéniosité pour créer des modèles toujours plus séduisants, jouant sur les formes et les motifs.</p>\n<p>Aujourd'hui encore, les boucles d'oreilles en or jaune 18 carats ornées d'oxydes de zirconium restent un choix prisé des femmes en quête d'élégance intemporelle. Elles incarnent parfaitement l'alliance entre tradition joaillière française et innovation, offrant un éclat comparable aux diamants tout en restant accessibles.</p>\n<p>Ainsi, lorsque vous portez des boucles d'oreilles en or pour femme serties d'oxydes de zirconium, vous perpétuez une tradition joaillière vieille de plus de deux siècles, tout en affichant un style résolument moderne et raffiné.</p>]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[<p>Poemana guarantees high quality jewelry with certified authentic cultured pearls and the Made in France label.</p>\n<p>Satisfied or your money back guaranteed.</p>]]></language></description>\n\t<description_short><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[<p>Découvrez nos superbes <strong>boucles d'oreilles en or jaune 18 carats serties d'oxydes de zirconium</strong>.</p>\n<p>Ces clous d'oreilles de <strong>6 mm</strong>, ornés de <strong>petits brillants</strong> sertis à 4 griffes, sont à la fois élégants, discrets et polyvalents.</p>\n<p>Avec leur système de fermeture poussette et un poids d'or de 1,2 gramme, ces boucles d'oreilles sont un indispensable pour toutes les occasions.</p>\n<p>Certifiées véritables, elles peuvent être facilement assorties à d'autres bijoux pour un look encore plus raffiné.</p>]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[<p><strong>18k yellow gold earrings with zirconium oxydes.</strong></p>\n<p>These small brilliants earrings are set in 750 gold, to form 6 mm size ear studs.<br />Wear them on all occasions! An essential pair of earrings to easily mix with other jewelry.</p>\n<p>Gold and stones are certified .</p>\n<p>Gold weight :0.95 gr<br />Butterfly back</p>]]></language></description_short>\n\t<available_now><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[]]></language></available_now>\n\t<available_later><language id=\"1\" xlink:href=\"https://dev.poemana.com/api/languages/1\"><![CDATA[]]></language><language id=\"2\" xlink:href=\"https://dev.poemana.com/api/languages/2\"><![CDATA[]]></language></available_later>\n<associations>\n<categories nodeType=\"category\" api=\"categories\">\n\t<category xlink:href=\"https://dev.poemana.com/api/categories/207\">\n\t<id><![CDATA[207]]></id>\n\t</category>\n</categories>\n<images nodeType=\"image\" api=\"images\">\n\t<image xlink:href=\"https://dev.poemana.com/api/images/products/1251/8508\">\n\t<id><![CDATA[8508]]></id>\n\t</image>\n</images>\n<combinations nodeType=\"combination\" api=\"combinations\"/>\n<product_option_values nodeType=\"product_option_value\" api=\"product_option_values\"/>\n<product_features nodeType=\"product_feature\" api=\"product_features\">\n\t<product_feature xlink:href=\"https://dev.poemana.com/api/product_features/19\">\n\t<id><![CDATA[19]]></id>\n\t<id_feature_value xlink:href=\"https://dev.poemana.com/api/product_feature_values/79\"><![CDATA[79]]></id_feature_value>\n\t</product_feature>\n\t<product_feature xlink:href=\"https://dev.poemana.com/api/product_features/21\">\n\t<id><![CDATA[21]]></id>\n\t<id_feature_value xlink:href=\"https://dev.poemana.com/api/product_feature_values/96\"><![CDATA[96]]></id_feature_value>\n\t</product_feature>\n</product_features>\n<tags nodeType=\"tag\" api=\"tags\"/>\n<stock_availables nodeType=\"stock_available\" api=\"stock_availables\">\n\t<stock_available xlink:href=\"https://dev.poemana.com/api/stock_availables/3126\">\n\t<id><![CDATA[3126]]></id>\n\t<id_product_attribute><![CDATA[0]]></id_product_attribute>\n\t</stock_available>\n</stock_availables>\n<attachments nodeType=\"attachment\" api=\"attachments\"/>\n<accessories nodeType=\"product\" api=\"products\">\n\t<product>\n\t<id xlink:href=\"https://dev.poemana.com/api/products/730\"><![CDATA[730]]></id>\n\t</product>\n\t<product>\n\t<id xlink:href=\"https://dev.poemana.com/api/products/775\"><![CDATA[775]]></id>\n\t</product>\n\t<product>\n\t<id xlink:href=\"https://dev.poemana.com/api/products/1028\"><![CDATA[1028]]></id>\n\t</product>\n\t<product>\n\t<id xlink:href=\"https://dev.poemana.com/api/products/1073\"><![CDATA[1073]]></id>\n\t</product>\n</accessories>\n<product_bundle nodeType=\"product\" api=\"products\"/>\n</associations>\n</product>\n</prestashop>\n"
+        }
+      }
+    ],
+    "Env Settings": [
+      {
+        "json": {
+          "product_id": 1251,
+          "context": "boucles d'oreilles discrètes de base",
+          "submittedAt": "2025-07-27T10:13:21.387-04:00",
+          "formMode": "test",
+          "PS_URL": "https://dev.poemana.com/api",
+          "APPROVAL_EMAIL": "fandango95@gmail.com",
+          "N8N_HOST": "https://n8n.dagdaconsulting.fr"
+        }
+      }
+    ]
+  },
+  "versionId": "2aa1987e-52b3-4dfd-9fd1-98d9cc2b730b",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-07-31T11:46:26.263Z",
+      "updatedAt": "2025-07-31T11:46:26.263Z",
+      "id": "pz0GFSwWAOojmA6b",
+      "name": "Google Sheet"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
