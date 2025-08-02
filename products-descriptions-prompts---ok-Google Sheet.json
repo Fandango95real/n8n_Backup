@@ -1,0 +1,798 @@
+{
+  "createdAt": "2025-07-31T20:47:28.004Z",
+  "updatedAt": "2025-08-01T08:03:03.000Z",
+  "id": "ybljLq7lXWwDJBnP",
+  "name": "Products descriptions prompts - OK",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37b81305-5851-4938-abe6-b0238e400066",
+              "name": "PS_URL",
+              "value": "https://dev.poemana.com/api",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        304
+      ],
+      "id": "41fd13d9-8c07-4749-8611-cdf141fa6d35",
+      "name": "Env Settings"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Env Settings').item.json.PS_URL }}/categories/{{ $node[\"Product_Data\"].json.prestashop.product.id_category_default._ }}?display=[name]&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        624
+      ],
+      "id": "384a8c85-00bf-4984-954b-58ffd35f7104",
+      "name": "Get Default Category Details",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récupère l'array de product_feature sous associations.product_features\nconst assoc = $('Product_Data').first().json.prestashop.product.associations.product_features;\nlet features = [];\n\n// Si on trouve bien product_feature, on force en tableau\nif (assoc && assoc.product_feature) {\n  features = Array.isArray(assoc.product_feature)\n    ? assoc.product_feature\n    : [assoc.product_feature];\n}\n\n// Map sur chaque feature pour en extraire les IDs et HREFs\nreturn features.map(f => ({\n  json: {\n    product_id: $('Product_Data').first().json.prestashop.product.id,\n    featureId:   f.id,                               // ex \"19\"\n    featureHref: f['xlink:href'],                    // URL de l'API\n    valueId:     f.id_feature_value._,               // ex \"79\"\n    valueHref:   f.id_feature_value['xlink:href']    // URL de l'API\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        624
+      ],
+      "id": "8669c587-cd22-48e0-b0f2-0e14f2e03563",
+      "name": "Get_Features_ID"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.featureHref }}?display=full&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        992
+      ],
+      "id": "855ef695-ec38-42ae-9fa1-c803d40f27dc",
+      "name": "Get Feature Name",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        368,
+        992
+      ],
+      "id": "b07b332d-e4a6-41ec-9f43-6baa8b6996ab",
+      "name": "XML2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get_Features_ID').item.json.valueHref }}?display=full&language=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        1184
+      ],
+      "id": "77d2866a-8150-4c2f-94f9-76049245c9f0",
+      "name": "Get Feature Value",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        368,
+        1184
+      ],
+      "id": "cb74f54f-2634-4705-bc47-dc84ee752cc1",
+      "name": "XML3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aa526c6c-9c5d-45b9-95a0-1c76c8b91dcb",
+              "name": "featureValue",
+              "value": "={{ $json.prestashop.product_feature_value.value.language._ }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        1184
+      ],
+      "id": "8b7a454f-eb25-4c47-a9fb-c6dac1115250",
+      "name": "Set Feature Value"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a3ebffe-f80d-49c8-95e5-0d75826186b2",
+              "name": "=featureName",
+              "value": "={{ $json.prestashop.product_feature.name.language._ }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        992
+      ],
+      "id": "0d28cac2-e2e8-404f-ac3a-2e3b4c6154b6",
+      "name": "Set Feature Name"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        1088
+      ],
+      "id": "36458b45-0f67-427d-803a-7ff980068f94",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "featureId",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        1104
+      ],
+      "id": "835d4ba1-7193-40d5-8309-511954adaae0",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1eWehQjqVhg-BVSWBniR2tE43JTL0Afdx_WeJ_wr2_CY",
+          "mode": "list",
+          "cachedResultName": "Bijoux",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eWehQjqVhg-BVSWBniR2tE43JTL0Afdx_WeJ_wr2_CY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Feuille 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eWehQjqVhg-BVSWBniR2tE43JTL0Afdx_WeJ_wr2_CY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product_ID": "={{$node[\"Product_Data\"].json.prestashop.product.id}}",
+            "Prompt": "=Rôle du modèle :\nAgis comme un rédacteur SEO sénior spécialisé dans la haute joaillerie, cumulant plus de 10 ans d’expérience en copywriting et optimisation pour les moteurs de recherche.\n\nObjectif :\nTon objectif est de rédiger des contenus de fiche produit captivants, pédagogiques et parfaitement optimisés pour le référencement naturel d’un bijou en perles de culture pour la marque française POEMANA.\n\nContexte :\nPublic cible : clientèle mixte CSP+ (35‑55 ans) amateur de bijoux de luxe abordables.\nPositionnement de la marque : luxe accessible, fabrication artisanale française (atelier dans les Yvelines), matériaux nobles (or 18 k, argent 925, perles Tahiti AAA, etc.).\nTon : raffiné, confiant, inclusif, jamais arrogant.\n\n\n### FICHE PRODUIT\nVoici les informations principales actuelles de la fiche produit :\n\nNom du bijou : {{ $node[\"Product_Data\"].json.prestashop.product.name.language[0]._ || \"\"}}\nCatégorie principale : {{ $node[\"Cat_Data\"].json.prestashop.category.name.language._ || \"\"}}\nCaractéristiques principales : {{ $json.specsString || \"\"}}\nDescription courte : {{ $node[\"Product_Data\"].json.prestashop.product.description_short.language[0]._ || \"\"}}\nDescription longue : {{ $node[\"Product_Data\"].json.prestashop.product.description.language[0]._ || \"\"}}\nMeta title : {{ $node[\"Product_Data\"].json.prestashop.product.meta_title.language[0]._ || \"\"}}\nMeta description : {{ $node[\"Product_Data\"].json.prestashop.product.meta_description.language[0]._ || \"\"}}\n\nTâches à réaliser :\n- Texte d’accroche (300‑600 car. HTML inclus) qui :\néveille l’émotion et la curiosité sans romancer ;\nprésente les bénéfices clés et les matériaux ;\nrespecte le ton défini.\n\n- Description longue (≤ 1000 car. HTML inclus) qui :\ndétaille le bijou ;\nintègre une anecdote véridique et vérifiable liée à ce type de bijou ou aux matériaux indiqués dans les caractéristiques du produit ;\ninsère naturellement des mots‑clés longue traîne pertinents sans suroptimisation.\n\n- FAQ 3 à 5 Q/R (format HTML <h3>/<p>) répondant aux questions pertinentes.\n\n- meta title : ≤ 70 car.\n- meta description ≤ 160 car., persuasive, incitative au clic.\n\nContraintes impératives :\n- Usage exclusif du vouvoiement.\n- Éviter les superlatifs creux (« magnifique », « sublime ») sauf si justifiés par un argument concret.\n- Utiliser un champ lexical du luxe (ex. « élégance », « raffinement », « exception ») sans arrogance.\n- Mentionner l’artisanat français si cela présente un intérêt et l’authenticité des perles une seule fois par fiche.\n\nProcessus de réflexion :\n- Commence par identifier les mots‑clés principaux et longue traîne relatifs au bijou en question.\n- Prends une grande respiration et rédige chaque section étape par étape en veillant au respect des contraintes.",
+            "Product_Name": "={{ $node[\"Product_Data\"].json.prestashop.product.name.language[0]._ || \"\"}}",
+            "Description_Short": "={{ $node[\"Product_Data\"].json.prestashop.product.description_short.language[0]._ || \"\"}}",
+            "Description_Long": "={{ $node[\"Product_Data\"].json.prestashop.product.description.language[0]._ || \"\"}}",
+            "Meta_title": "={{ $node[\"Product_Data\"].json.prestashop.product.meta_title.language[0]._ || \"\"}}",
+            "Meta_Description": "={{ $node[\"Product_Data\"].json.prestashop.product.meta_description.language[0]._ || \"\"}}",
+            "Categorie": "={{ $node[\"Cat_Data\"].json.prestashop.category.name.language._ || \"\"}}"
+          },
+          "matchingColumns": [
+            "Product_ID"
+          ],
+          "schema": [
+            {
+              "id": "Product_ID",
+              "displayName": "Product_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product_Name",
+              "displayName": "Product_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Categorie",
+              "displayName": "Categorie",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Prompt",
+              "displayName": "Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description_Short",
+              "displayName": "Description_Short",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description_Long",
+              "displayName": "Description_Long",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meta_title",
+              "displayName": "Meta_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meta_Description",
+              "displayName": "Meta_Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1344,
+        1248
+      ],
+      "id": "8e25dac5-620b-4900-8031-3bee835708fa",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fZJ7VkRlV9NR56ws",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récupère tous les items en entrée\nconst items = $input.all();\n\n// Construit la chaîne \"featureName : featureValue ; featureName : featureValue …\"\nconst specsString = items\n  .map(item => `${item.json.featureName} : ${item.json.featureValue}`)\n  .join(' ; ');\n\n// Retourne un seul item avec la propriété specsString\nreturn [\n  {\n    json: { specsString }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        1088
+      ],
+      "id": "3287cb61-fd68-46ad-b4ae-6116df332aa6",
+      "name": "Build Specs String"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        304
+      ],
+      "id": "cb216d0f-dc7a-479b-8a47-526be6b38d45",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        480,
+        304
+      ],
+      "id": "f12a60b1-4b7a-47ff-8074-14975a5d41a3",
+      "name": "Json Products List",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Env Settings\"].json.PS_URL}}/products?filter[active]=[1]&display=[id]&limit=0,1000",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        304
+      ],
+      "id": "69a22445-1c98-423f-b1e1-8110a45eb090",
+      "name": "Get Prestashop Products List",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Env Settings').item.json.PS_URL }}/products/{{ $node[\"Loop Over Items\"].json.id }}?display=full",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        624
+      ],
+      "id": "b6bb1b39-90e6-41cb-89f6-29e97d1f38ff",
+      "name": "Get Prestashop Product",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "JIW7HN5US0Y2VmG2",
+          "name": "poemana_Dev_api_rw"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -192,
+        608
+      ],
+      "id": "d72ee349-7d24-47a7-b191-2a8273942619",
+      "name": "Loop Over Items",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récupère le tableau de produits\nconst list = $json.prestashop.products.product || [];\n// Émet un item par élément du tableau, contenant seulement l'id\nreturn list.map(p => ({ json: { id: p.id } }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        304
+      ],
+      "id": "e03f7a27-877c-4e49-84b5-2fca21ca7c72",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        288,
+        624
+      ],
+      "id": "da230fea-76fb-48dd-acba-b9c6fcfae87f",
+      "name": "Product_Data"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        816,
+        624
+      ],
+      "id": "5f8426c6-29f5-45a8-97e7-b0e9c5d9d6ae",
+      "name": "Cat_Data"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1552,
+        1248
+      ],
+      "id": "4424b0e6-1b90-4189-ab6c-99496b556189",
+      "name": "Wait",
+      "webhookId": "1e8b1a19-75e2-4459-aec3-3cbecaf092c6"
+    },
+    {
+      "parameters": {
+        "content": "## Enregistrement des produits\n\nSource : dev.poemana.com\nDest : Google Sheet Bijoux\nDonnées : \n- nom produit\n- catégorie principale\n- short desc\n- long desc\n- caractéristiques (une seule string)\n- prompt prêt pour la génération\n\nLoop over et wait de 5 secondes pour rate limit ~10 produits/min",
+        "height": 320,
+        "width": 384
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -688,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "8c7e13a2-4035-404d-aa43-c75e257e085a",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Env Settings": {
+      "main": [
+        [
+          {
+            "node": "Get Prestashop Products List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Default Category Details": {
+      "main": [
+        [
+          {
+            "node": "Cat_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Features_ID": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Feature Name": {
+      "main": [
+        [
+          {
+            "node": "XML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML2": {
+      "main": [
+        [
+          {
+            "node": "Set Feature Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Feature Value": {
+      "main": [
+        [
+          {
+            "node": "XML3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML3": {
+      "main": [
+        [
+          {
+            "node": "Set Feature Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Feature Value": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Feature Name": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Build Specs String",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get Feature Name",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Feature Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Specs String": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Env Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Json Products List": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prestashop Products List": {
+      "main": [
+        [
+          {
+            "node": "Json Products List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prestashop Product": {
+      "main": [
+        [
+          {
+            "node": "Product_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Prestashop Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product_Data": {
+      "main": [
+        [
+          {
+            "node": "Get Default Category Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cat_Data": {
+      "main": [
+        [
+          {
+            "node": "Get_Features_ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Env Settings": [
+      {
+        "json": {
+          "product_id": 1251,
+          "context": "boucles d'oreilles discrètes de base",
+          "submittedAt": "2025-07-27T10:13:21.387-04:00",
+          "formMode": "test",
+          "PS_URL": "https://dev.poemana.com/api",
+          "APPROVAL_EMAIL": "fandango95@gmail.com",
+          "N8N_HOST": "https://n8n.dagdaconsulting.fr"
+        }
+      }
+    ]
+  },
+  "versionId": "1d876dc6-e290-497a-a15e-c45ac49a3c28",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-07-31T11:46:26.263Z",
+      "updatedAt": "2025-07-31T11:46:26.263Z",
+      "id": "pz0GFSwWAOojmA6b",
+      "name": "Google Sheet"
+    },
+    {
+      "createdAt": "2025-05-21T14:14:05.923Z",
+      "updatedAt": "2025-05-21T22:47:17.123Z",
+      "id": "rT7DmxzzD4whx6JH",
+      "name": "prestashop"
+    }
+  ]
+}
