@@ -1,10 +1,10 @@
 {
   "createdAt": "2025-07-27T13:56:33.266Z",
-  "updatedAt": "2025-07-31T13:31:09.000Z",
+  "updatedAt": "2025-08-01T07:52:49.000Z",
   "id": "6bvaqLrxR5PUOGJY",
   "name": "Enrichissement Fiches Produits",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {
@@ -1009,7 +1009,7 @@
       }
     ]
   },
-  "versionId": "2aa1987e-52b3-4dfd-9fd1-98d9cc2b730b",
+  "versionId": "2c4f068f-dc6e-4ded-a4b7-21f7071dacc8",
   "triggerCount": 0,
   "tags": [
     {
