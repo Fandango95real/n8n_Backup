@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-03T20:49:16.788Z",
-  "updatedAt": "2025-08-03T21:46:35.000Z",
+  "updatedAt": "2025-08-04T16:07:00.000Z",
   "id": "7SfWe8xFQp4mBbLU",
   "name": "ImageMagick",
   "active": false,
@@ -8,250 +8,84 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 12
-            }
-          ]
-        }
+        "command": "find /data/imagick -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.bmp' -o -iname '*.tif' \\) -print"
       },
-      "name": "Schedule",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [
-        -96,
-        -16
-      ],
-      "id": "efb43a48-d1d9-429e-9849-224553bbe41e"
-    },
-    {
-      "parameters": {
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "url": "https://data.c-g-h.net/remote.php/dav/files/fandango/IMagick/",
-        "responseFormat": "string",
-        "options": {}
-      },
-      "name": "List Files",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        128,
-        -16
-      ],
-      "id": "2e569272-3b29-4521-b535-604fbed94b36",
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "Enq6REyivJk5gMlq",
-          "name": "WebDav data.c-g-h.net"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "url": "={{\"https://data.c-g-h.net/remote.php/dav\" + $json.path}}",
-        "responseFormat": "file",
-        "options": {}
-      },
-      "name": "Download File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        576,
-        -16
-      ],
-      "id": "d4069357-0ec8-4bbf-be1f-b3ae85a349f7",
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "Enq6REyivJk5gMlq",
-          "name": "WebDav data.c-g-h.net"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "fileName": "=/data/{{$json.name}}",
-        "options": {}
-      },
-      "name": "Write to /data",
-      "type": "n8n-nodes-base.writeBinaryFile",
-      "typeVersion": 1,
-      "position": [
-        800,
-        -16
-      ],
-      "id": "18277d72-ca78-4c2e-b7a9-b98c8080bd8f"
-    },
-    {
-      "parameters": {
-        "command": "docker exec n8n_imagemagick_1 convert /data/{{$json.name}} /data/{{$json.name.replace(/\\.[^/.]+$/, '.webp')}}"
-      },
-      "name": "Convert to WebP",
+      "name": "Find Images",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1024,
-        -16
+        224,
+        240
       ],
-      "id": "25708017-2390-4cdc-8a91-d54991b971a5"
-    },
-    {
-      "parameters": {},
-      "name": "Read WebP File",
-      "type": "n8n-nodes-base.readBinaryFile",
-      "typeVersion": 1,
-      "position": [
-        1248,
-        -16
-      ],
-      "id": "fd72b69a-0660-44d5-9890-0d1fe8818ffd"
+      "id": "65732cf7-2ef9-41a7-91e9-b6f7e29c23bd"
     },
     {
       "parameters": {
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "url": "={{\"https://data.c-g-h.net/remote.php/dav/files/fandango/IMagick/converted/\" + $json.name.replace(/\\.[^/.]+$/, '.webp')}}",
-        "responseFormat": "string",
-        "options": {}
+        "jsCode": "const raw = $json.stdout;\nif (!raw) return [];\n\nconst paths = raw.trim().split('\\n');\n\nreturn paths.map(p => ({ json: { path: p } }));\n"
       },
-      "name": "Upload WebP File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        1472,
-        -16
-      ],
-      "id": "b6ad6166-5d31-4c92-b0d5-af891c4d67d8",
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "Enq6REyivJk5gMlq",
-          "name": "WebDav data.c-g-h.net"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "url": "={{\"https://data.c-g-h.net/remote.php/dav\" + $json.path}}",
-        "responseFormat": "string",
-        "options": {}
-      },
-      "name": "Move Original File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        1696,
-        -16
-      ],
-      "id": "c72fcdc1-3bde-420c-ac8d-7752b7171f95",
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "Enq6REyivJk5gMlq",
-          "name": "WebDav data.c-g-h.net"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const xml = $json.body || \"\";\nconst matches = [...xml.matchAll(/<d:href>(.*?)<\\/d:href>/g)];\n\nconst files = [];\nfor (const match of matches) {\n  const full = decodeURIComponent(match[1]);\n  if (\n    !full.endsWith('/') &&\n    !full.includes('/processed/') &&\n    !full.includes('/converted/')\n  ) {\n    const parts = full.split('/');\n    const name = parts[parts.length - 1];\n    files.push({ path: full, name });\n  }\n}\nreturn files.map(f => ({ json: f }));\n"
-      },
+      "name": "Parse File List",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        352,
-        -16
+        448,
+        240
       ],
-      "id": "dde06ae6-75eb-45da-8d21-0f7392978d3f",
-      "name": "Extract File List"
+      "id": "812c98b7-4ef7-4d0a-bd53-1d5a2c5563da"
+    },
+    {
+      "parameters": {
+        "executeOnce": false,
+        "command": "=magick \"{{ $json.path }}\" -trim +repage -background white -gravity center -resize 1000x1000^ -extent 1000x1000 \"/data/imagick/converted/{{ $json.path.split('/').pop().replace(/\\.[^/.]+$/, '') }}.webp\" && mv \"{{ $json.path }}\" \"/data/imagick/processed/\"\n"
+      },
+      "name": "Convert and Move",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        672,
+        240
+      ],
+      "id": "80758b38-c07e-4278-8ebe-cfe1465e97e1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ],
+      "id": "b4bee2e9-07d6-41b3-a405-1692e0f84246",
+      "name": "When clicking ‘Execute workflow’"
     }
   ],
   "connections": {
-    "Schedule": {
+    "Find Images": {
       "main": [
         [
           {
-            "node": "List Files",
+            "node": "Parse File List",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "List Files": {
+    "Parse File List": {
       "main": [
         [
           {
-            "node": "Extract File List",
+            "node": "Convert and Move",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Download File": {
+    "When clicking ‘Execute workflow’": {
       "main": [
         [
           {
-            "node": "Write to /data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Write to /data": {
-      "main": [
-        [
-          {
-            "node": "Convert to WebP",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert to WebP": {
-      "main": [
-        [
-          {
-            "node": "Read WebP File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read WebP File": {
-      "main": [
-        [
-          {
-            "node": "Upload WebP File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Upload WebP File": {
-      "main": [
-        [
-          {
-            "node": "Move Original File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract File List": {
-      "main": [
-        [
-          {
-            "node": "Download File",
+            "node": "Find Images",
             "type": "main",
             "index": 0
           }
@@ -267,7 +101,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "2c4fa3e0-eef9-49cc-b6cd-afa16a9a6586",
+  "versionId": "66652467-1ba4-465d-b50d-1f7bc799dd49",
   "triggerCount": 0,
   "tags": []
 }
