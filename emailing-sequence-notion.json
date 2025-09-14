@@ -483,6 +483,15 @@
   "pinData": {},
   "versionId": "33131006-60a6-4401-a606-f117279baeba",
   "triggerCount": 2,
+  "shared": [
+    {
+      "createdAt": "2025-05-23T10:05:28.938Z",
+      "updatedAt": "2025-05-23T10:05:28.938Z",
+      "role": "workflow:owner",
+      "workflowId": "qqPofSEKswPVvYfv",
+      "projectId": "Izndf5GBoM9xJxqQ"
+    }
+  ],
   "tags": [
     {
       "createdAt": "2025-05-23T10:32:19.651Z",
